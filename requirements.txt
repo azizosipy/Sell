@@ -1,34 +1,27 @@
-# Python == 3.9.13
 
-# Core Web Framework
-Flask==2.0.1               # Web framework
-Flask-SQLAlchemy==2.5.1    # Database ORM for Flask (compatible with Flask 2.0.1)
-Werkzeug==2.0.1           # Required by Flask
-Jinja2==3.0.3             # Template engine (compatible with Flask 2.0.1)
-MarkupSafe==2.0.1         # Required by Jinja2
-itsdangerous==2.0.1       # Required by Flask for session handling
-click==8.0.3              # Required by Flask for CLI
+Flask==2.0.1               
+Flask-SQLAlchemy==2.5.1    
+Werkzeug==2.0.1           
+Jinja2==3.0.3            
+MarkupSafe==2.0.1         
+itsdangerous==2.0.1      
+click==8.0.3              
 
 # Database
-SQLAlchemy==1.4.44        # SQL ORM (compatible with Flask-SQLAlchemy 2.5.1)
+SQLAlchemy==1.4.44        
 
-# Data Processing and Machine Learning
-numpy==1.21.6             # Required for data processing (last version supporting Python 3.9)
-pandas==1.4.4             # Data manipulation (compatible with numpy 1.21.6)
-scikit-learn==1.0.2       # Machine learning models (compatible with numpy 1.21.6)
-scipy==1.7.3              # Required by scikit-learn (compatible with Python 3.9)
-joblib==1.1.1             # Model persistence
-threadpoolctl==3.1.0      # Required by scikit-learn
+numpy==1.21.6             
+pandas==1.4.4             
+scikit-learn==1.0.2      
+scipy==1.7.3             
+joblib==1.1.1            
+threadpoolctl==3.1.0      
 
-# Data Visualization
-plotly==5.13.1            # Interactive plots for model analysis (compatible with Python 3.9)
+plotly==5.13.1            
 
-# Environment Variables
-python-dotenv==0.19.2     # Environment variable management
+python-dotenv==0.19.2    
 
-# Production Server
-gunicorn==20.1.0          # Production WSGI server
+gunicorn==20.1.0          
 
-# Utilities
-six==1.16.0               # Python 2 and 3 compatibility utilities
-tenacity==8.2.2           # Required by plotly
+six==1.16.0               
+tenacity==8.2.2           
