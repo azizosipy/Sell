@@ -1,7 +1,7 @@
 config==0.5.1
 dash==2.0.0
 dash_bootstrap_components==0.13.1
-faiss==1.5.3
+faiss-cpu==1.7.4
 Flask==2.0.1
 flask_sqlalchemy==3.1.1
 joblib==1.4.2
