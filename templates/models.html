@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Performance - Steel Plant Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    keyframes: {
+                        fadeOut: {
+                            '0%': { opacity: '1' },
+                            '100%': { opacity: '0', visibility: 'hidden' }
+                        }
+                    },
+                    animation: {
+                        'fade-out': 'fadeOut 1s ease-out 2s forwards'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="transition-colors duration-200 dark:bg-gradient-to-br dark:from-dark-900 dark:via-dark-800 dark:to-dark-900 bg-gradient-to-br from-gray-100 via-white to-gray-100 text-gray-900 dark:text-gray-100 min-h-screen">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:20px_20px] -z-10"></div>
+    <div class="fixed inset-0 bg-gradient-to-br from-primary-500/10 dark:from-primary-900/20 via-transparent dark:to-primary-900/20 to-primary-500/10 -z-10"></div>
+
+    <!-- Welcome Message Overlay -->
+    <div class="fixed inset-0 flex items-center justify-center bg-gray-900/80 dark:bg-dark-900/80 backdrop-blur-sm z-50 animate-fade-out">
+        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-primary-400">
+            Welcome, enjoy your Model Analysis!
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Navigation with Theme Toggle -->
+        <nav class="mb-8 flex justify-between items-center">
+            <a href="/" class="text-gray-700 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-200">
+                ← Back to Dashboard
+            </a>
+            <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-700 transition-all duration-200">
+                <!-- Sun icon for light mode -->
+                <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- Moon icon for dark mode -->
+                <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-primary-400 via-primary-300 to-primary-400 mb-4">
+                Model Performance Analysis
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">Detailed metrics and visualizations of our predictive models</p>
+        </header>
+
+        <!-- Model Performance Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Blast Furnace Model Card -->
+            <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-2 h-2 bg-primary-500 rounded-full mr-2"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Blast Furnace Model</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-gray-50 dark:bg-dark-800/50 rounded-lg">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">R² Score</p>
+                        <div class="flex items-baseline">
+                            <span class="text-2xl font-bold text-gray-900 dark:text-primary-300" id="blast-r2">-</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-500 ml-1">(test)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 dark:bg-dark-800/50 rounded-lg">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">RMSE</p>
+                        <div class="flex items-baseline">
+                            <span class="text-2xl font-bold text-gray-900 dark:text-primary-300" id="blast-rmse">-</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-500 ml-1">°C</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="blast-feature-importance" class="h-64 mb-4"></div>
+                <div id="blast-actual-vs-predicted" class="h-64"></div>
+            </div>
+
+            <!-- Sinter Plant Model Card -->
+            <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-2 h-2 bg-primary-500 rounded-full mr-2"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Sinter Plant Model</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-gray-50 dark:bg-dark-800/50 rounded-lg">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">R² Score</p>
+                        <div class="flex items-baseline">
+                            <span class="text-2xl font-bold text-gray-900 dark:text-primary-300" id="sinter-r2">-</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-500 ml-1">(test)</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 dark:bg-dark-800/50 rounded-lg">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">RMSE</p>
+                        <div class="flex items-baseline">
+                            <span class="text-2xl font-bold text-gray-900 dark:text-primary-300" id="sinter-rmse">-</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-500 ml-1">t/m²h</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="sinter-feature-importance" class="h-64 mb-4"></div>
+                <div id="sinter-actual-vs-predicted" class="h-64"></div>
+            </div>
+        </div>
+
+        <!-- Error Analysis Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Blast Furnace Residuals -->
+            <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-2 h-2 bg-primary-500 rounded-full mr-2"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Blast Furnace Error Distribution</h2>
+                </div>
+                <div id="blast-residuals" class="h-64"></div>
+            </div>
+
+            <!-- Sinter Plant Residuals -->
+            <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-2 h-2 bg-primary-500 rounded-full mr-2"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Sinter Plant Error Distribution</h2>
+                </div>
+                <div id="sinter-residuals" class="h-64"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function initTheme() {
+            // Check if theme is stored in localStorage
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            // Update charts if they exist
+            if (typeof loadModelPerformance === 'function') {
+                loadModelPerformance();
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update charts with new theme
+            if (typeof loadModelPerformance === 'function') {
+                loadModelPerformance();
+            }
+
+            // Animate theme transition
+            document.documentElement.style.transition = 'background-color 0.3s ease-in-out, color 0.3s ease-in-out';
+            setTimeout(() => {
+                document.documentElement.style.transition = '';
+            }, 300);
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initTheme);
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                if (typeof loadModelPerformance === 'function') {
+                    loadModelPerformance();
+                }
+            }
+        });
+
+        // Plot configuration for themes
+        const lightTheme = {
+            paper_bgcolor: 'rgba(255,255,255,0.8)',
+            plot_bgcolor: 'rgba(255,255,255,0.8)',
+            font: {
+                color: '#1f2937'  // Dark text for light mode
+            },
+            xaxis: {
+                gridcolor: 'rgba(0,0,0,0.1)',
+                zerolinecolor: 'rgba(0,0,0,0.2)',
+                tickfont: { color: '#1f2937' },  // Dark text for tick labels
+                title: { font: { color: '#1f2937' } }  // Dark text for axis title
+            },
+            yaxis: {
+                gridcolor: 'rgba(0,0,0,0.1)',
+                zerolinecolor: 'rgba(0,0,0,0.2)',
+                tickfont: { color: '#1f2937' },  // Dark text for tick labels
+                title: { font: { color: '#1f2937' } }  // Dark text for axis title
+            },
+            title: {
+                font: { color: '#1f2937' }  // Dark text for chart title
+            }
+        };
+
+        const darkTheme = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {
+                color: 'rgba(255,255,255,0.7)'
+            },
+            xaxis: {
+                gridcolor: 'rgba(255,255,255,0.1)',
+                zerolinecolor: 'rgba(255,255,255,0.2)',
+                tickfont: { color: 'rgba(255,255,255,0.7)' },
+                title: { font: { color: 'rgba(255,255,255,0.7)' } }
+            },
+            yaxis: {
+                gridcolor: 'rgba(255,255,255,0.1)',
+                zerolinecolor: 'rgba(255,255,255,0.2)',
+                tickfont: { color: 'rgba(255,255,255,0.7)' },
+                title: { font: { color: 'rgba(255,255,255,0.7)' } }
+            },
+            title: {
+                font: { color: 'rgba(255,255,255,0.7)' }
+            }
+        };
+
+        async function loadModelPerformance() {
+            const currentTheme = document.documentElement.classList.contains('dark') ? darkTheme : lightTheme;
+            try {
+                const response = await fetch('/api/models/performance');
+                const data = await response.json();
+
+                // Update metrics
+                document.getElementById('blast-r2').textContent = data.blast_furnace.test_r2.toFixed(3);
+                document.getElementById('blast-rmse').textContent = data.blast_furnace.test_rmse.toFixed(2);
+                document.getElementById('sinter-r2').textContent = data.sinter_plant.test_r2.toFixed(3);
+                document.getElementById('sinter-rmse').textContent = data.sinter_plant.test_rmse.toFixed(2);
+
+                // Plot Feature Importance
+                const blastFeatures = Object.entries(data.blast_furnace.feature_importance);
+                Plotly.newPlot('blast-feature-importance', [{
+                    y: blastFeatures.map(f => f[0]),
+                    x: blastFeatures.map(f => f[1]),
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)'
+                    },
+                    text: blastFeatures.map(f => f[1].toFixed(3)),  // Add text labels
+                    textposition: 'auto',
+                    textfont: {
+                        color: currentTheme.font.color  // Use theme color for text
+                    }
+                }], {
+                    ...currentTheme,
+                    title: 'Feature Importance',
+                    margin: { l: 150, r: 20, t: 40, b: 40 }
+                });
+
+                const sinterFeatures = Object.entries(data.sinter_plant.feature_importance);
+                Plotly.newPlot('sinter-feature-importance', [{
+                    y: sinterFeatures.map(f => f[0]),
+                    x: sinterFeatures.map(f => f[1]),
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)'
+                    },
+                    text: sinterFeatures.map(f => f[1].toFixed(3)),  // Add text labels
+                    textposition: 'auto',
+                    textfont: {
+                        color: currentTheme.font.color  // Use theme color for text
+                    }
+                }], {
+                    ...currentTheme,
+                    title: 'Feature Importance',
+                    margin: { l: 150, r: 20, t: 40, b: 40 }
+                });
+
+                // Plot Actual vs Predicted with proper colors
+                Plotly.newPlot('blast-actual-vs-predicted', [{
+                    x: data.blast_furnace.actual_vs_predicted.test.actual,
+                    y: data.blast_furnace.actual_vs_predicted.test.predicted,
+                    mode: 'markers',
+                    type: 'scatter',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)'
+                    }
+                }], {
+                    ...currentTheme,
+                    title: 'Actual vs Predicted',
+                    xaxis: { title: 'Actual Temperature (°C)' },
+                    yaxis: { title: 'Predicted Temperature (°C)' }
+                });
+
+                Plotly.newPlot('sinter-actual-vs-predicted', [{
+                    x: data.sinter_plant.actual_vs_predicted.test.actual,
+                    y: data.sinter_plant.actual_vs_predicted.test.predicted,
+                    mode: 'markers',
+                    type: 'scatter',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)'
+                    }
+                }], {
+                    ...currentTheme,
+                    title: 'Actual vs Predicted',
+                    xaxis: { title: 'Actual Productivity (t/m²h)' },
+                    yaxis: { title: 'Predicted Productivity (t/m²h)' }
+                });
+
+                // Load and plot residuals with proper colors
+                const residualsResponse = await fetch('/api/models/residuals');
+                const residualsData = await residualsResponse.json();
+
+                Plotly.newPlot('blast-residuals', [{
+                    x: residualsData.blast_furnace.test,
+                    type: 'histogram',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)'
+                    }
+                }], {
+                    ...currentTheme,
+                    title: 'Error Distribution',
+                    xaxis: { title: 'Prediction Error (°C)' },
+                    yaxis: { title: 'Count' }
+                });
+
+                Plotly.newPlot('sinter-residuals', [{
+                    x: residualsData.sinter_plant.test,
+                    type: 'histogram',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)'
+                    }
+                }], {
+                    ...currentTheme,
+                    title: 'Error Distribution',
+                    xaxis: { title: 'Prediction Error (t/m²h)' },
+                    yaxis: { title: 'Count' }
+                });
+
+            } catch (error) {
+                console.error('Error loading model performance:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadModelPerformance);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const plots = [
+                'blast-feature-importance',
+                'sinter-feature-importance',
+                'blast-actual-vs-predicted',
+                'sinter-actual-vs-predicted',
+                'blast-residuals',
+                'sinter-residuals'
+            ];
+            plots.forEach(id => {
+                Plotly.relayout(id, {
+                    width: document.getElementById(id).clientWidth,
+                    height: document.getElementById(id).clientHeight
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+2025-04-08 18:24:14,957 - INFO - Loading data files...
+2025-04-08 18:24:14,961 - INFO - Sinter data shape: (10, 14)
+2025-04-08 18:24:14,961 - INFO - Sinter data columns: ['sample_id', 'basicity', 'sio2_content', 'al2o3_content', 'mgo_content', 'bed_height', 'ignition_temperature', 'burn_through_temperature', 'coke_rate', 'moisture_content', 'return_fines_ratio', 'tumbler_index', 'reducibility_index', 'productivity']
+2025-04-08 18:24:14,987 - INFO - Sinter data summary:
+        basicity  sio2_content  al2o3_content  ...  tumbler_index  reducibility_index  productivity
+count  10.000000     10.000000      10.000000  ...      10.000000           10.000000     10.000000
+mean    1.903000      5.151000       1.860000  ...      75.000000           68.140000      1.372000
+std     0.046679      0.128015       0.056765  ...       0.793025            0.777746      0.019322
+min     1.830000      4.950000       1.780000  ...      73.800000           66.900000      1.340000
+25%     1.865000      5.057500       1.815000  ...      74.350000           67.550000      1.360000
+50%     1.910000      5.150000       1.855000  ...      75.000000           68.200000      1.375000
+75%     1.937500      5.250000       1.905000  ...      75.650000           68.750000      1.387500
+max     1.970000      5.350000       1.950000  ...      76.100000           69.200000      1.400000
+
+[8 rows x 13 columns]
+2025-04-08 18:24:14,988 - INFO - Creating models...
+2025-04-08 18:24:15,045 - INFO - Setting up Sinter Plant Model...
+2025-04-08 18:24:15,046 - INFO - Feature statistics:
+2025-04-08 18:24:15,046 - INFO - basicity:
+2025-04-08 18:24:15,046 - INFO -   Mean: 1.9030
+2025-04-08 18:24:15,046 - INFO -   Std: 0.0467
+2025-04-08 18:24:15,047 - INFO -   Min: 1.8300
+2025-04-08 18:24:15,047 - INFO -   Max: 1.9700
+2025-04-08 18:24:15,047 - INFO - sio2_content:
+2025-04-08 18:24:15,047 - INFO -   Mean: 5.1510
+2025-04-08 18:24:15,047 - INFO -   Std: 0.1280
+2025-04-08 18:24:15,048 - INFO -   Min: 4.9500
+2025-04-08 18:24:15,048 - INFO -   Max: 5.3500
+2025-04-08 18:24:15,048 - INFO - al2o3_content:
+2025-04-08 18:24:15,048 - INFO -   Mean: 1.8600
+2025-04-08 18:24:15,048 - INFO -   Std: 0.0568
+2025-04-08 18:24:15,049 - INFO -   Min: 1.7800
+2025-04-08 18:24:15,049 - INFO -   Max: 1.9500
+2025-04-08 18:24:15,049 - INFO - mgo_content:
+2025-04-08 18:24:15,049 - INFO -   Mean: 1.6360
+2025-04-08 18:24:15,049 - INFO -   Std: 0.0550
+2025-04-08 18:24:15,049 - INFO -   Min: 1.5500
+2025-04-08 18:24:15,049 - INFO -   Max: 1.7200
+2025-04-08 18:24:15,050 - INFO - bed_height:
+2025-04-08 18:24:15,050 - INFO -   Mean: 561.5600
+2025-04-08 18:24:15,050 - INFO -   Std: 8.5370
+2025-04-08 18:24:15,050 - INFO -   Min: 547.2000
+2025-04-08 18:24:15,050 - INFO -   Max: 572.8000
+2025-04-08 18:24:15,050 - INFO - ignition_temperature:
+2025-04-08 18:24:15,050 - INFO -   Mean: 1096.5100
+2025-04-08 18:24:15,050 - INFO -   Std: 3.1772
+2025-04-08 18:24:15,051 - INFO -   Min: 1092.5000
+2025-04-08 18:24:15,051 - INFO -   Max: 1101.3000
+2025-04-08 18:24:15,051 - INFO - Training set size: 8
+2025-04-08 18:24:15,051 - INFO - Test set size: 2
+2025-04-08 18:24:15,052 - INFO - Training Sinter Plant Model...
+2025-04-08 18:24:15,107 - INFO - Sinter Plant Model Performance:
+2025-04-08 18:24:15,108 - INFO - Train R� Score: 0.7585
+2025-04-08 18:24:15,108 - INFO - Test R� Score: -1.5562
+2025-04-08 18:24:15,108 - INFO - Train RMSE: 0.0088
+2025-04-08 18:24:15,108 - INFO - Test RMSE: 0.0080
+2025-04-08 18:24:15,108 - INFO - Train MAE: 0.0065
+2025-04-08 18:24:15,108 - INFO - Test MAE: 0.0057
+2025-04-08 18:24:15,110 - INFO - Feature Importance:
+2025-04-08 18:24:15,111 - INFO - bed_height: 0.2356
+2025-04-08 18:24:15,111 - INFO - mgo_content: 0.2037
+2025-04-08 18:24:15,111 - INFO - basicity: 0.1771
+2025-04-08 18:24:15,111 - INFO - sio2_content: 0.1705
+2025-04-08 18:24:15,111 - INFO - ignition_temperature: 0.1612
+2025-04-08 18:24:15,111 - INFO - al2o3_content: 0.0520
+2025-04-08 18:24:15,121 - INFO -  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2025-04-08 18:24:20,347 - INFO - 127.0.0.1 - - [08/Apr/2025 18:24:20] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:24:20,465 - INFO - 127.0.0.1 - - [08/Apr/2025 18:24:20] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:24:20,518 - INFO - 127.0.0.1 - - [08/Apr/2025 18:24:20] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:27:20,241 - INFO - Loading data files...
+2025-04-08 18:27:20,246 - INFO - Sinter data shape: (10, 14)
+2025-04-08 18:27:20,246 - INFO - Sinter data columns: ['sample_id', 'basicity', 'sio2_content', 'al2o3_content', 'mgo_content', 'bed_height', 'ignition_temperature', 'burn_through_temperature', 'coke_rate', 'moisture_content', 'return_fines_ratio', 'tumbler_index', 'reducibility_index', 'productivity']
+2025-04-08 18:27:20,269 - INFO - Sinter data summary:
+        basicity  sio2_content  al2o3_content  ...  tumbler_index  reducibility_index  productivity
+count  10.000000     10.000000      10.000000  ...      10.000000           10.000000     10.000000
+mean    1.903000      5.151000       1.860000  ...      75.000000           68.140000      1.372000
+std     0.046679      0.128015       0.056765  ...       0.793025            0.777746      0.019322
+min     1.830000      4.950000       1.780000  ...      73.800000           66.900000      1.340000
+25%     1.865000      5.057500       1.815000  ...      74.350000           67.550000      1.360000
+50%     1.910000      5.150000       1.855000  ...      75.000000           68.200000      1.375000
+75%     1.937500      5.250000       1.905000  ...      75.650000           68.750000      1.387500
+max     1.970000      5.350000       1.950000  ...      76.100000           69.200000      1.400000
+
+[8 rows x 13 columns]
+2025-04-08 18:27:20,270 - INFO - Creating models...
+2025-04-08 18:27:20,329 - INFO - Setting up Sinter Plant Model...
+2025-04-08 18:27:20,330 - INFO - Total dataset size: 10
+2025-04-08 18:27:20,330 - INFO - 
+Feature statistics:
+2025-04-08 18:27:20,330 - INFO - basicity:
+2025-04-08 18:27:20,330 - INFO -   Mean: 1.9030
+2025-04-08 18:27:20,331 - INFO -   Std: 0.0467
+2025-04-08 18:27:20,331 - INFO -   Min: 1.8300
+2025-04-08 18:27:20,331 - INFO -   Max: 1.9700
+2025-04-08 18:27:20,331 - INFO - sio2_content:
+2025-04-08 18:27:20,331 - INFO -   Mean: 5.1510
+2025-04-08 18:27:20,331 - INFO -   Std: 0.1280
+2025-04-08 18:27:20,332 - INFO -   Min: 4.9500
+2025-04-08 18:27:20,332 - INFO -   Max: 5.3500
+2025-04-08 18:27:20,332 - INFO - al2o3_content:
+2025-04-08 18:27:20,332 - INFO -   Mean: 1.8600
+2025-04-08 18:27:20,332 - INFO -   Std: 0.0568
+2025-04-08 18:27:20,332 - INFO -   Min: 1.7800
+2025-04-08 18:27:20,333 - INFO -   Max: 1.9500
+2025-04-08 18:27:20,333 - INFO - mgo_content:
+2025-04-08 18:27:20,333 - INFO -   Mean: 1.6360
+2025-04-08 18:27:20,333 - INFO -   Std: 0.0550
+2025-04-08 18:27:20,333 - INFO -   Min: 1.5500
+2025-04-08 18:27:20,334 - INFO -   Max: 1.7200
+2025-04-08 18:27:20,334 - INFO - bed_height:
+2025-04-08 18:27:20,334 - INFO -   Mean: 561.5600
+2025-04-08 18:27:20,334 - INFO -   Std: 8.5370
+2025-04-08 18:27:20,334 - INFO -   Min: 547.2000
+2025-04-08 18:27:20,334 - INFO -   Max: 572.8000
+2025-04-08 18:27:20,334 - INFO - ignition_temperature:
+2025-04-08 18:27:20,334 - INFO -   Mean: 1096.5100
+2025-04-08 18:27:20,335 - INFO -   Std: 3.1772
+2025-04-08 18:27:20,335 - INFO -   Min: 1092.5000
+2025-04-08 18:27:20,335 - INFO -   Max: 1101.3000
+2025-04-08 18:27:20,335 - INFO - 
+Performing 5-fold cross-validation...
+2025-04-08 18:27:20,604 - INFO - Cross-validation R� scores: [-1.02043669  0.63546378 -8.14246225  0.11408986 -1.82069917]
+2025-04-08 18:27:20,605 - INFO - Mean CV R� score: -2.0468 (+/- 6.3325)
+2025-04-08 18:27:20,606 - INFO - 
+Training set size: 8
+2025-04-08 18:27:20,606 - INFO - Test set size: 2
+2025-04-08 18:27:20,607 - INFO - 
+Training final Sinter Plant Model...
+2025-04-08 18:27:20,661 - INFO - 
+Sinter Plant Model Performance:
+2025-04-08 18:27:20,661 - INFO - Train R� Score: 0.7955
+2025-04-08 18:27:20,661 - INFO - Test R� Score: -1.0030
+2025-04-08 18:27:20,662 - INFO - Train RMSE: 0.0081
+2025-04-08 18:27:20,662 - INFO - Test RMSE: 0.0071
+2025-04-08 18:27:20,662 - INFO - Train MAE: 0.0052
+2025-04-08 18:27:20,663 - INFO - Test MAE: 0.0050
+2025-04-08 18:27:20,665 - INFO - 
+Feature Importance Analysis:
+2025-04-08 18:27:20,665 - INFO - bed_height:
+2025-04-08 18:27:20,665 - INFO -   Importance: 0.2193
+2025-04-08 18:27:20,665 - INFO -   Mean value: 561.5600
+2025-04-08 18:27:20,665 - INFO -   Std value: 8.5370
+2025-04-08 18:27:20,666 - INFO - basicity:
+2025-04-08 18:27:20,666 - INFO -   Importance: 0.1954
+2025-04-08 18:27:20,666 - INFO -   Mean value: 1.9030
+2025-04-08 18:27:20,666 - INFO -   Std value: 0.0467
+2025-04-08 18:27:20,666 - INFO - mgo_content:
+2025-04-08 18:27:20,666 - INFO -   Importance: 0.1791
+2025-04-08 18:27:20,667 - INFO -   Mean value: 1.6360
+2025-04-08 18:27:20,667 - INFO -   Std value: 0.0550
+2025-04-08 18:27:20,667 - INFO - ignition_temperature:
+2025-04-08 18:27:20,667 - INFO -   Importance: 0.1712
+2025-04-08 18:27:20,668 - INFO -   Mean value: 1096.5100
+2025-04-08 18:27:20,668 - INFO -   Std value: 3.1772
+2025-04-08 18:27:20,668 - INFO - sio2_content:
+2025-04-08 18:27:20,668 - INFO -   Importance: 0.1702
+2025-04-08 18:27:20,668 - INFO -   Mean value: 5.1510
+2025-04-08 18:27:20,669 - INFO -   Std value: 0.1280
+2025-04-08 18:27:20,669 - INFO - al2o3_content:
+2025-04-08 18:27:20,669 - INFO -   Importance: 0.0648
+2025-04-08 18:27:20,669 - INFO -   Mean value: 1.8600
+2025-04-08 18:27:20,669 - INFO -   Std value: 0.0568
+2025-04-08 18:27:20,681 - INFO -  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2025-04-08 18:27:29,833 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:29] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:27:29,958 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:29] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:27:30,011 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:30] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:27:30,918 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:30] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:27:31,025 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:31] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:27:31,074 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:31] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:27:35,572 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:35] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:27:35,677 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:35] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:27:35,723 - INFO - 127.0.0.1 - - [08/Apr/2025 18:27:35] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:28:48,948 - INFO - 127.0.0.1 - - [08/Apr/2025 18:28:48] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:28:49,127 - INFO - 127.0.0.1 - - [08/Apr/2025 18:28:49] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:28:49,175 - INFO - 127.0.0.1 - - [08/Apr/2025 18:28:49] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:29:01,604 - INFO - 127.0.0.1 - - [08/Apr/2025 18:29:01] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:29:01,732 - INFO - 127.0.0.1 - - [08/Apr/2025 18:29:01] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:29:01,781 - INFO - 127.0.0.1 - - [08/Apr/2025 18:29:01] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:29:13,047 - INFO - 127.0.0.1 - - [08/Apr/2025 18:29:13] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:29:13,149 - INFO - 127.0.0.1 - - [08/Apr/2025 18:29:13] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:29:13,190 - INFO - 127.0.0.1 - - [08/Apr/2025 18:29:13] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:30:04,504 - INFO - 127.0.0.1 - - [08/Apr/2025 18:30:04] "GET /models HTTP/1.1" 200 -
+2025-04-08 18:30:04,623 - INFO - 127.0.0.1 - - [08/Apr/2025 18:30:04] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 18:30:04,674 - INFO - 127.0.0.1 - - [08/Apr/2025 18:30:04] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 18:30:10,686 - INFO - Loading data files...
+2025-04-08 18:30:10,690 - INFO - Sinter data shape: (10, 14)
+2025-04-08 18:30:10,690 - INFO - Sinter data columns: ['sample_id', 'basicity', 'sio2_content', 'al2o3_content', 'mgo_content', 'bed_height', 'ignition_temperature', 'burn_through_temperature', 'coke_rate', 'moisture_content', 'return_fines_ratio', 'tumbler_index', 'reducibility_index', 'productivity']
+2025-04-08 18:30:10,712 - INFO - Sinter data summary:
+        basicity  sio2_content  al2o3_content  ...  tumbler_index  reducibility_index  productivity
+count  10.000000     10.000000      10.000000  ...      10.000000           10.000000     10.000000
+mean    1.903000      5.151000       1.860000  ...      75.000000           68.140000      1.372000
+std     0.046679      0.128015       0.056765  ...       0.793025            0.777746      0.019322
+min     1.830000      4.950000       1.780000  ...      73.800000           66.900000      1.340000
+25%     1.865000      5.057500       1.815000  ...      74.350000           67.550000      1.360000
+50%     1.910000      5.150000       1.855000  ...      75.000000           68.200000      1.375000
+75%     1.937500      5.250000       1.905000  ...      75.650000           68.750000      1.387500
+max     1.970000      5.350000       1.950000  ...      76.100000           69.200000      1.400000
+
+[8 rows x 13 columns]
+2025-04-08 18:30:10,712 - INFO - Creating models...
+2025-04-08 18:30:10,769 - INFO - Setting up Sinter Plant Model...
+2025-04-08 18:30:10,770 - INFO - Total dataset size: 10
+2025-04-08 18:30:10,770 - INFO - 
+Feature statistics:
+2025-04-08 18:30:10,770 - INFO - basicity:
+2025-04-08 18:30:10,771 - INFO -   Mean: 1.9030
+2025-04-08 18:30:10,771 - INFO -   Std: 0.0467
+2025-04-08 18:30:10,771 - INFO -   Min: 1.8300
+2025-04-08 18:30:10,771 - INFO -   Max: 1.9700
+2025-04-08 18:30:10,771 - INFO - sio2_content:
+2025-04-08 18:30:10,772 - INFO -   Mean: 5.1510
+2025-04-08 18:30:10,772 - INFO -   Std: 0.1280
+2025-04-08 18:30:10,772 - INFO -   Min: 4.9500
+2025-04-08 18:30:10,772 - INFO -   Max: 5.3500
+2025-04-08 18:30:10,772 - INFO - al2o3_content:
+2025-04-08 18:30:10,772 - INFO -   Mean: 1.8600
+2025-04-08 18:30:10,773 - INFO -   Std: 0.0568
+2025-04-08 18:30:10,773 - INFO -   Min: 1.7800
+2025-04-08 18:30:10,773 - INFO -   Max: 1.9500
+2025-04-08 18:30:10,773 - INFO - mgo_content:
+2025-04-08 18:30:10,773 - INFO -   Mean: 1.6360
+2025-04-08 18:30:10,773 - INFO -   Std: 0.0550
+2025-04-08 18:30:10,773 - INFO -   Min: 1.5500
+2025-04-08 18:30:10,773 - INFO -   Max: 1.7200
+2025-04-08 18:30:10,773 - INFO - bed_height:
+2025-04-08 18:30:10,774 - INFO -   Mean: 561.5600
+2025-04-08 18:30:10,774 - INFO -   Std: 8.5370
+2025-04-08 18:30:10,774 - INFO -   Min: 547.2000
+2025-04-08 18:30:10,774 - INFO -   Max: 572.8000
+2025-04-08 18:30:10,774 - INFO - ignition_temperature:
+2025-04-08 18:30:10,774 - INFO -   Mean: 1096.5100
+2025-04-08 18:30:10,774 - INFO -   Std: 3.1772
+2025-04-08 18:30:10,774 - INFO -   Min: 1092.5000
+2025-04-08 18:30:10,775 - INFO -   Max: 1101.3000
+2025-04-08 18:30:10,775 - INFO - 
+Performing 5-fold cross-validation...
+2025-04-08 18:30:11,025 - INFO - Cross-validation R� scores: [-1.02043669  0.63546378 -8.14246225  0.11408986 -1.82069917]
+2025-04-08 18:30:11,025 - INFO - Mean CV R� score: -2.0468 (+/- 6.3325)
+2025-04-08 18:30:11,026 - INFO - 
+Training set size: 8
+2025-04-08 18:30:11,027 - INFO - Test set size: 2
+2025-04-08 18:30:11,027 - INFO - 
+Training final Sinter Plant Model...
+2025-04-08 18:30:11,127 - INFO - 
+Sinter Plant Model Performance:
+2025-04-08 18:30:11,127 - INFO - Train R� Score: 0.3999
+2025-04-08 18:30:11,127 - INFO - Test R� Score: -9.1028
+2025-04-08 18:30:11,128 - INFO - Train RMSE: 0.0139
+2025-04-08 18:30:11,128 - INFO - Test RMSE: 0.0159
+2025-04-08 18:30:11,128 - INFO - Train MAE: 0.0105
+2025-04-08 18:30:11,128 - INFO - Test MAE: 0.0151
+2025-04-08 18:30:11,130 - INFO - 
+Feature Importance Analysis:
+2025-04-08 18:30:11,130 - INFO - basicity:
+2025-04-08 18:30:11,130 - INFO -   Importance: 0.2375
+2025-04-08 18:30:11,130 - INFO -   Mean value: 1.9030
+2025-04-08 18:30:11,130 - INFO -   Std value: 0.0467
+2025-04-08 18:30:11,130 - INFO - sio2_content:
+2025-04-08 18:30:11,131 - INFO -   Importance: 0.2125
+2025-04-08 18:30:11,131 - INFO -   Mean value: 5.1510
+2025-04-08 18:30:11,131 - INFO -   Std value: 0.1280
+2025-04-08 18:30:11,131 - INFO - mgo_content:
+2025-04-08 18:30:11,131 - INFO -   Importance: 0.1750
+2025-04-08 18:30:11,131 - INFO -   Mean value: 1.6360
+2025-04-08 18:30:11,132 - INFO -   Std value: 0.0550
+2025-04-08 18:30:11,132 - INFO - ignition_temperature:
+2025-04-08 18:30:11,132 - INFO -   Importance: 0.1625
+2025-04-08 18:30:11,132 - INFO -   Mean value: 1096.5100
+2025-04-08 18:30:11,132 - INFO -   Std value: 3.1772
+2025-04-08 18:30:11,132 - INFO - al2o3_content:
+2025-04-08 18:30:11,132 - INFO -   Importance: 0.1125
+2025-04-08 18:30:11,132 - INFO -   Mean value: 1.8600
+2025-04-08 18:30:11,133 - INFO -   Std value: 0.0568
+2025-04-08 18:30:11,133 - INFO - bed_height:
+2025-04-08 18:30:11,133 - INFO -   Importance: 0.1000
+2025-04-08 18:30:11,133 - INFO -   Mean value: 561.5600
+2025-04-08 18:30:11,133 - INFO -   Std value: 8.5370
+2025-04-08 18:33:04,861 - INFO -  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2025-04-08 19:24:18,620 - INFO - 127.0.0.1 - - [08/Apr/2025 19:24:18] "GET /models HTTP/1.1" 200 -
+2025-04-08 19:24:18,848 - INFO - 127.0.0.1 - - [08/Apr/2025 19:24:18] "GET /api/models/performance HTTP/1.1" 200 -
+2025-04-08 19:24:18,901 - INFO - 127.0.0.1 - - [08/Apr/2025 19:24:18] "GET /api/models/residuals HTTP/1.1" 200 -
+2025-04-08 19:27:37,787 - INFO - Loading data files...
+2025-04-08 19:27:37,792 - INFO - Sinter data shape: (10, 14)
+2025-04-08 19:27:37,792 - INFO - Sinter data columns: ['sample_id', 'basicity', 'sio2_content', 'al2o3_content', 'mgo_content', 'bed_height', 'ignition_temperature', 'burn_through_temperature', 'coke_rate', 'moisture_content', 'return_fines_ratio', 'tumbler_index', 'reducibility_index', 'productivity']
+2025-04-08 19:27:37,815 - INFO - Sinter data summary:
+        basicity  sio2_content  al2o3_content  ...  tumbler_index  reducibility_index  productivity
+count  10.000000     10.000000      10.000000  ...      10.000000           10.000000     10.000000
+mean    1.903000      5.151000       1.860000  ...      75.000000           68.140000      1.372000
+std     0.046679      0.128015       0.056765  ...       0.793025            0.777746      0.019322
+min     1.830000      4.950000       1.780000  ...      73.800000           66.900000      1.340000
+25%     1.865000      5.057500       1.815000  ...      74.350000           67.550000      1.360000
+50%     1.910000      5.150000       1.855000  ...      75.000000           68.200000      1.375000
+75%     1.937500      5.250000       1.905000  ...      75.650000           68.750000      1.387500
+max     1.970000      5.350000       1.950000  ...      76.100000           69.200000      1.400000
+
+[8 rows x 13 columns]
+2025-04-08 19:27:37,815 - INFO - Creating models...
+2025-04-08 19:27:37,870 - INFO - Setting up Sinter Plant Model...
+2025-04-08 19:27:37,871 - INFO - Total dataset size: 10
+2025-04-08 19:27:37,871 - INFO - 
+Feature statistics:
+2025-04-08 19:27:37,871 - INFO - basicity:
+2025-04-08 19:27:37,871 - INFO -   Mean: 1.9030
+2025-04-08 19:27:37,872 - INFO -   Std: 0.0467
+2025-04-08 19:27:37,872 - INFO -   Min: 1.8300
+2025-04-08 19:27:37,872 - INFO -   Max: 1.9700
+2025-04-08 19:27:37,872 - INFO - sio2_content:
+2025-04-08 19:27:37,872 - INFO -   Mean: 5.1510
+2025-04-08 19:27:37,872 - INFO -   Std: 0.1280
+2025-04-08 19:27:37,873 - INFO -   Min: 4.9500
+2025-04-08 19:27:37,873 - INFO -   Max: 5.3500
+2025-04-08 19:27:37,873 - INFO - al2o3_content:
+2025-04-08 19:27:37,873 - INFO -   Mean: 1.8600
+2025-04-08 19:27:37,873 - INFO -   Std: 0.0568
+2025-04-08 19:27:37,873 - INFO -   Min: 1.7800
+2025-04-08 19:27:37,873 - INFO -   Max: 1.9500
+2025-04-08 19:27:37,873 - INFO - mgo_content:
+2025-04-08 19:27:37,874 - INFO -   Mean: 1.6360
+2025-04-08 19:27:37,874 - INFO -   Std: 0.0550
+2025-04-08 19:27:37,874 - INFO -   Min: 1.5500
+2025-04-08 19:27:37,874 - INFO -   Max: 1.7200
+2025-04-08 19:27:37,874 - INFO - bed_height:
+2025-04-08 19:27:37,874 - INFO -   Mean: 561.5600
+2025-04-08 19:27:37,875 - INFO -   Std: 8.5370
+2025-04-08 19:27:37,875 - INFO -   Min: 547.2000
+2025-04-08 19:27:37,875 - INFO -   Max: 572.8000
+2025-04-08 19:27:37,875 - INFO - ignition_temperature:
+2025-04-08 19:27:37,875 - INFO -   Mean: 1096.5100
+2025-04-08 19:27:37,875 - INFO -   Std: 3.1772
+2025-04-08 19:27:37,875 - INFO -   Min: 1092.5000
+2025-04-08 19:27:37,875 - INFO -   Max: 1101.3000
+2025-04-08 19:27:37,875 - INFO - 
+Performing 5-fold cross-validation...
+2025-04-08 19:27:38,119 - INFO - Cross-validation R� scores: [-1.02043669  0.63546378 -8.14246225  0.11408986 -1.82069917]
+2025-04-08 19:27:38,121 - INFO - Mean CV R� score: -2.0468 (+/- 6.3325)
+2025-04-08 19:27:38,122 - INFO - 
+Training set size: 8
+2025-04-08 19:27:38,122 - INFO - Test set size: 2
+2025-04-08 19:27:38,122 - INFO - 
+Training final Sinter Plant Model...
+2025-04-08 19:27:38,219 - INFO - 
+Sinter Plant Model Performance:
+2025-04-08 19:27:38,220 - INFO - Train R� Score: 0.3999
+2025-04-08 19:27:38,220 - INFO - Test R� Score: -9.1028
+2025-04-08 19:27:38,220 - INFO - Train RMSE: 0.0139
+2025-04-08 19:27:38,220 - INFO - Test RMSE: 0.0159
+2025-04-08 19:27:38,220 - INFO - Train MAE: 0.0105
+2025-04-08 19:27:38,220 - INFO - Test MAE: 0.0151
+2025-04-08 19:27:38,222 - INFO - 
+Feature Importance Analysis:
+2025-04-08 19:27:38,222 - INFO - basicity:
+2025-04-08 19:27:38,222 - INFO -   Importance: 0.2375
+2025-04-08 19:27:38,222 - INFO -   Mean value: 1.9030
+2025-04-08 19:27:38,223 - INFO -   Std value: 0.0467
+2025-04-08 19:27:38,223 - INFO - sio2_content:
+2025-04-08 19:27:38,223 - INFO -   Importance: 0.2125
+2025-04-08 19:27:38,223 - INFO -   Mean value: 5.1510
+2025-04-08 19:27:38,223 - INFO -   Std value: 0.1280
+2025-04-08 19:27:38,223 - INFO - mgo_content:
+2025-04-08 19:27:38,223 - INFO -   Importance: 0.1750
+2025-04-08 19:27:38,224 - INFO -   Mean value: 1.6360
+2025-04-08 19:27:38,224 - INFO -   Std value: 0.0550
+2025-04-08 19:27:38,224 - INFO - ignition_temperature:
+2025-04-08 19:27:38,224 - INFO -   Importance: 0.1625
+2025-04-08 19:27:38,224 - INFO -   Mean value: 1096.5100
+2025-04-08 19:27:38,224 - INFO -   Std value: 3.1772
+2025-04-08 19:27:38,224 - INFO - al2o3_content:
+2025-04-08 19:27:38,224 - INFO -   Importance: 0.1125
+2025-04-08 19:27:38,225 - INFO -   Mean value: 1.8600
+2025-04-08 19:27:38,225 - INFO -   Std value: 0.0568
+2025-04-08 19:27:38,225 - INFO - bed_height:
+2025-04-08 19:27:38,225 - INFO -   Importance: 0.1000
+2025-04-08 19:27:38,225 - INFO -   Mean value: 561.5600
+2025-04-08 19:27:38,225 - INFO -   Std value: 8.5370
+2025-04-08 19:27:38,234 - INFO -  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2025-04-08 19:46:37,172 - INFO - 127.0.0.1 - - [08/Apr/2025 19:46:37] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-08 19:46:37,180 - INFO - 127.0.0.1 - - [08/Apr/2025 19:46:37] "GET /login HTTP/1.1" 200 -
+2025-04-08 19:46:42,045 - INFO - 127.0.0.1 - - [08/Apr/2025 19:46:42] "GET /register HTTP/1.1" 200 -
+2025-04-08 19:47:03,886 - INFO - 127.0.0.1 - - [08/Apr/2025 19:47:03] "[33mPOST /api/register HTTP/1.1[0m" 404 -
+2025-04-08 19:47:10,149 - INFO - 127.0.0.1 - - [08/Apr/2025 19:47:10] "[33mPOST /api/register HTTP/1.1[0m" 404 -
+2025-04-08 19:47:47,061 - INFO - 127.0.0.1 - - [08/Apr/2025 19:47:47] "[33mPOST /api/register HTTP/1.1[0m" 404 -
+2025-04-08 19:48:05,690 - INFO - 127.0.0.1 - - [08/Apr/2025 19:48:05] "GET /register HTTP/1.1" 200 -

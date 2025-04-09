@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Plant </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+
+        // Theme toggle functionality
+        function initTheme() {
+            // Check if theme is stored in localStorage
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // Update metric colors
+            updateMetricColors();
+
+            // Update charts if they exist
+            if (typeof loadModelPerformance === 'function') {
+                loadModelPerformance();
+            }
+        }
+
+        function updateMetricColors() {
+            const metricsColor = document.documentElement.classList.contains('dark') ? 'text-primary-300' : 'text-gray-900';
+            const metricElements = [
+                'blast-r2', 'blast-rmse', 'sinter-r2', 'sinter-rmse'
+            ];
+            metricElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.className = `text-2xl font-bold ${metricsColor}`;
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update metric colors
+            updateMetricColors();
+            
+            // Update charts if they exist
+            if (typeof loadModelPerformance === 'function') {
+                loadModelPerformance();
+            }
+
+            // Animate theme transition
+            document.documentElement.style.transition = 'background-color 0.3s ease-in-out, color 0.3s ease-in-out';
+            setTimeout(() => {
+                document.documentElement.style.transition = '';
+            }, 300);
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initTheme);
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                updateMetricColors();
+                if (typeof loadModelPerformance === 'function') {
+                    loadModelPerformance();
+                }
+            }
+        });
+
+        // Handle window resize with debouncing
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const plots = [
+                    'blast-feature-importance',
+                    'sinter-feature-importance',
+                    'blast-actual-vs-predicted',
+                    'sinter-actual-vs-predicted',
+                    'blast-residuals',
+                    'sinter-residuals'
+                ];
+                plots.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        Plotly.relayout(id, {
+                            width: element.clientWidth,
+                            height: element.clientHeight,
+                            ...document.documentElement.classList.contains('dark') ? darkTheme : lightTheme
+                        });
+                    }
+                });
+            }, 250);
+        });
+    </script>
+</head>
+<body class="transition-colors duration-200 dark:bg-gradient-to-br dark:from-dark-900 dark:via-dark-800 dark:to-dark-900 bg-gradient-to-br from-gray-100 via-white to-gray-100 dark:text-gray-100 text-gray-900 min-h-screen">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:20px_20px] -z-10"></div>
+    <div class="fixed inset-0 bg-gradient-to-br dark:from-primary-900/20 from-primary-500/10 via-transparent dark:to-primary-900/20 to-primary-500/10 -z-10"></div>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Modern Header with Glassmorphism -->
+        <header class="fixed top-0 left-0 right-0 z-50">
+            <!-- Blur Background -->
+            <div class="absolute inset-0 dark:bg-dark-900/70 bg-white/70 backdrop-blur-xl border-b dark:border-white/10 border-gray-200"></div>
+            
+            <!-- Header Content -->
+            <div class="container mx-auto px-6 py-4">
+                <div class="relative flex items-center justify-between">
+                    <!-- Logo and Title Section -->
+                    <div class="flex items-center space-x-6">
+                        <div class="relative group">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full blur opacity-25 group-hover:opacity-40 transition duration-200"></div>
+                            <img src="static/images/logo.png" alt="Steel Plant Analytics Logo" class="relative h-12 w-auto">
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
+                                Steel Plant Predictions
+                            </h1>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 mt-1">Advanced Modeling & Analytics Dashboard</p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <nav class="flex items-center space-x-4">
+                        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-700 transition-all duration-200">
+                            <!-- Sun icon for light mode -->
+                            <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <!-- Moon icon for dark mode -->
+                            <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </button>
+                        <div class="flex space-x-1">
+                            <a href="#" class="px-4 py-2 rounded-lg dark:text-gray-300 text-gray-700 dark:hover:text-white hover:text-gray-900 dark:hover:bg-white/10 hover:bg-gray-100 transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="/models" class="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                <span>Models</span>
+                            </a>
+                            <a href="/logout" class="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Spacer for Fixed Header -->
+        <div class="h-24"></div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Blast Furnace Section -->
+            <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-8 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300 animate-slide-up">
+                <div class="flex items-center mb-6">
+                    <div class="w-3 h-3 bg-primary-500 rounded-full mr-3 animate-pulse"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Blast Furnace Predictor</h2>
+                </div>
+                <form id="blastFurnaceForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Blast Temperature (°C)</label>
+                            <input type="number" id="blast_temperature" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Oxygen Enrichment (%)</label>
+                            <input type="number" id="oxygen_enrichment" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Coal Injection Rate (kg/thm)</label>
+                            <input type="number" id="coal_injection_rate" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Top Pressure (bar)</label>
+                            <input type="number" id="top_pressure" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Moisture (%)</label>
+                            <input type="number" id="moisture" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ore Fe Content (%)</label>
+                            <input type="number" id="ore_fe_content" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 px-6 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-dark-900 transition-all duration-300 transform hover:scale-[1.02]">
+                        Predict Hot Metal Temperature
+                    </button>
+                </form>
+                <div id="blastFurnaceResult" class="mt-6 p-6 bg-gray-50 dark:bg-dark-800/50 rounded-lg border-primary-500/40 dark:border-primary-500/20 border hidden animate-fade-in">
+                    <h3 class="text-lg font-medium text-primary-600 dark:text-primary-400">Predicted Hot Metal Temperature:</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2"></p>
+                </div>
+            </div>
+
+            <!-- Sinter Plant Section -->
+            <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-8 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300 animate-slide-up">
+                <div class="flex items-center mb-6">
+                    <div class="w-3 h-3 bg-primary-500 rounded-full mr-3 animate-pulse"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Sinter Plant Predictor</h2>
+                </div>
+                <form id="sinterPlantForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Basicity (CaO/SiO2)</label>
+                            <input type="number" id="basicity" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SiO2 Content (%)</label>
+                            <input type="number" id="sio2_content" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Al2O3 Content (%)</label>
+                            <input type="number" id="al2o3_content" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">MgO Content (%)</label>
+                            <input type="number" id="mgo_content" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Bed Height (mm)</label>
+                            <input type="number" id="bed_height" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ignition Temperature (°C)</label>
+                            <input type="number" id="ignition_temperature" class="w-full bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 px-6 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-dark-900 transition-all duration-300 transform hover:scale-[1.02]">
+                        Predict Productivity
+                    </button>
+                </form>
+                <div id="sinterPlantResult" class="mt-6 p-6 bg-gray-50 dark:bg-dark-800/50 rounded-lg border-primary-500/40 dark:border-primary-500/20 border hidden animate-fade-in">
+                    <h3 class="text-lg font-medium text-primary-600 dark:text-primary-400">Predicted Productivity:</h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2"></p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300 animate-slide-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-2 h-2 bg-primary-500 rounded-full mr-2 animate-pulse"></div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-primary-400">Moisture Chart</h2>
+                    </div>
+                    <div class="h-48">
+                        <canvas id="moistureChart"></canvas>
+                    </div>
+                </div>
+                <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300 animate-slide-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-2 h-2 bg-primary-500 rounded-full mr-2 animate-pulse"></div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-primary-400">Filtration Chart</h2>
+                    </div>
+                    <div class="h-48">
+                        <canvas id="filtrationChart"></canvas>
+                    </div>
+                </div>
+                <div class="backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-6 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300 animate-slide-up md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="w-2 h-2 bg-primary-500 rounded-full mr-2 animate-pulse"></div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-primary-400">Feature Importance</h2>
+                    </div>
+                    <div class="h-52">
+                        <canvas id="pelletFeatureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Section -->
+            <div class="lg:col-span-2 backdrop-blur-lg bg-white/80 dark:bg-white/5 rounded-2xl shadow-2xl p-8 border-gray-200 dark:border-white/10 border hover:border-primary-500/50 transition-all duration-300 animate-slide-up">
+                <div class="flex items-center mb-6">
+                    <div class="w-3 h-3 bg-primary-500 rounded-full mr-3 animate-pulse"></div>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-primary-400">Knowledge Base Search</h2>
+                </div>
+                <form id="knowledge-search" class="flex space-x-4 mb-6">
+                    <input type="text" id="search-query" placeholder="Search operational knowledge..." class="flex-1 bg-white dark:bg-dark-800/50 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+                    <button type="submit" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-2 px-6 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-dark-900 transition-all duration-300 transform hover:scale-[1.02]">
+                        Search
+                    </button>
+                </form>
+                <div class="query-list space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts with modern styling
+        function createPelletFeatureChart() {
+            const ctx = document.getElementById('pelletFeatureChart');
+            if (!ctx) return;
+            
+            const currentTheme = document.documentElement.classList.contains('dark');
+            const textColor = currentTheme ? 'rgba(255, 255, 255, 0.7)' : '#111827';
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Induration Temp', 'Induration Time', 'Bentonite Addition', 'Moisture Content', 'Concentrate Fe', 'Disc Speed'],
+                    datasets: [{
+                        label: 'Feature Importance',
+                        data: [0.32, 0.22, 0.18, 0.12, 0.09, 0.07],
+                        backgroundColor: [
+                            'rgba(14, 165, 233, 0.8)',
+                            'rgba(37, 99, 235, 0.8)',
+                            'rgba(79, 70, 229, 0.8)',
+                            'rgba(124, 58, 237, 0.8)',
+                            'rgba(168, 85, 247, 0.8)',
+                            'rgba(236, 72, 153, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(14, 165, 233, 1)',
+                            'rgba(37, 99, 235, 1)',
+                            'rgba(79, 70, 229, 1)',
+                            'rgba(124, 58, 237, 1)',
+                            'rgba(168, 85, 247, 1)',
+                            'rgba(236, 72, 153, 1)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: currentTheme ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                            titleColor: currentTheme ? '#fff' : '#111827',
+                            bodyColor: currentTheme ? '#fff' : '#111827',
+                            borderColor: 'rgba(14, 165, 233, 0.5)',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return `Importance: ${(context.raw * 100).toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                color: currentTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                callback: function(value) {
+                                    return (value * 100).toFixed(0) + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Importance (%)',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createMoistureChart() {
+            const ctx = document.getElementById('moistureChart');
+            if (!ctx) return;
+            
+            const currentTheme = document.documentElement.classList.contains('dark');
+            const textColor = currentTheme ? 'rgba(255, 255, 255, 0.7)' : '#111827'; // Light mode uses dark gray/black
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+                    datasets: [{
+                        label: 'Filter Cake Moisture (%)',
+                        data: [10.2, 10.0, 9.9, 9.7, 9.8, 9.8, 9.7],
+                        borderColor: 'rgba(14, 165, 233, 1)',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(14, 165, 233, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }, {
+                        label: 'Target',
+                        data: [9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5],
+                        borderColor: currentTheme ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: currentTheme ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                            titleColor: currentTheme ? '#fff' : '#111827',
+                            bodyColor: currentTheme ? '#fff' : '#111827',
+                            borderColor: 'rgba(14, 165, 233, 0.5)',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 9.0,
+                            max: 10.5,
+                            grid: {
+                                color: currentTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Moisture Content (%)',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createFiltrationChart() {
+            const ctx = document.getElementById('filtrationChart');
+            if (!ctx) return;
+            
+            const currentTheme = document.documentElement.classList.contains('dark');
+            const textColor = currentTheme ? 'rgba(255, 255, 255, 0.7)' : '#111827';
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+                    datasets: [{
+                        label: 'Filtration Rate (kg/m²/h)',
+                        data: [81.0, 81.8, 82.5, 83.5, 84.0, 82.8, 82.0],
+                        borderColor: 'rgba(14, 165, 233, 1)',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(14, 165, 233, 1)',
+                        pointBorderColor: currentTheme ? '#1e293b' : '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Solids Recovery (%)',
+                        data: [98.5, 98.65, 98.8, 99.0, 99.1, 99.0, 98.9],
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                        pointBorderColor: currentTheme ? '#1e293b' : '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: currentTheme ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                            titleColor: currentTheme ? '#fff' : '#111827',
+                            bodyColor: currentTheme ? '#fff' : '#111827',
+                            borderColor: 'rgba(14, 165, 233, 0.5)',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 80,
+                            max: 85,
+                            grid: {
+                                color: currentTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Filtration Rate',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        y1: {
+                            beginAtZero: false,
+                            min: 98,
+                            max: 100,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Solids Recovery',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time',
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize knowledge search
+        function initKnowledgeSearch() {
+            const searchForm = document.getElementById('knowledge-search');
+            const searchInput = document.getElementById('search-query');
+            const queryList = document.querySelector('.query-list');
+            
+            if (!searchForm || !searchInput || !queryList) return;
+            
+            searchForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const query = searchInput.value.trim();
+                if (!query) return;
+
+                try {
+                    const response = await fetch('/api/knowledge/search', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ query })
+                    });
+
+                    const data = await response.json();
+                    queryList.innerHTML = ''; // Clear previous results
+
+                    if (data.results.length === 0) {
+                        queryList.innerHTML = `
+                            <div class="p-4 bg-dark-800/50 rounded-lg border border-primary-500/20 mb-4">
+                                <p class="text-gray-400">No results found for "${query}"</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    data.results.forEach(result => {
+                        const resultElement = document.createElement('div');
+                        resultElement.className = 'p-4 bg-dark-800/50 rounded-lg border border-primary-500/20 hover:border-primary-500/50 transition-all duration-300 mb-4';
+                        resultElement.innerHTML = `
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-2 h-2 bg-primary-500 rounded-full"></div>
+                                <h3 class="text-lg font-medium text-primary-400">${result.title}</h3>
+                            </div>
+                            <div class="mb-2">
+                                <span class="px-2 py-1 text-xs font-medium bg-primary-500/20 text-primary-300 rounded-full">
+                                    ${result.category}
+                                </span>
+                            </div>
+                            <p class="text-gray-300">${result.content}</p>
+                        `;
+                        queryList.appendChild(resultElement);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    queryList.innerHTML = `
+                        <div class="p-4 bg-dark-800/50 rounded-lg border border-red-500/20 mb-4">
+                            <p class="text-red-400">Error searching knowledge base. Please try again.</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Initialize all charts and features
+        document.addEventListener('DOMContentLoaded', function() {
+            createPelletFeatureChart();
+            createMoistureChart();
+            createFiltrationChart();
+            initKnowledgeSearch();
+        });
+
+        // Blast Furnace Form Handler
+        document.getElementById('blastFurnaceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                blast_temperature: parseFloat(document.getElementById('blast_temperature').value),
+                oxygen_enrichment: parseFloat(document.getElementById('oxygen_enrichment').value),
+                coal_injection_rate: parseFloat(document.getElementById('coal_injection_rate').value),
+                top_pressure: parseFloat(document.getElementById('top_pressure').value),
+                moisture: parseFloat(document.getElementById('moisture').value),
+                ore_fe_content: parseFloat(document.getElementById('ore_fe_content').value)
+            };
+
+            const resultDiv = document.getElementById('blastFurnaceResult');
+
+            // Validate that all fields have valid numeric values
+            for (const [key, value] of Object.entries(formData)) {
+                if (isNaN(value)) {
+                    resultDiv.classList.remove('hidden');
+                    resultDiv.innerHTML = `
+                        <div class="flex items-center space-x-2 text-red-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="text-lg font-medium">Invalid Input</h3>
+                        </div>
+                        <p class="mt-2 text-red-400">Please enter a valid number for ${key.replace(/_/g, ' ')}</p>
+                    `;
+                    return;
+                }
+            }
+
+            try {
+                // Show loading state
+                resultDiv.classList.remove('hidden');
+                resultDiv.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="w-4 h-4 rounded-full bg-primary-500 animate-pulse"></div>
+                        <div class="w-4 h-4 rounded-full bg-primary-500 animate-pulse delay-150"></div>
+                        <div class="w-4 h-4 rounded-full bg-primary-500 animate-pulse delay-300"></div>
+                    </div>
+                    <p class="text-center text-primary-400 mt-2">Calculating prediction...</p>
+                `;
+
+                const response = await fetch('/api/blast-furnace/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                // Success state
+                resultDiv.innerHTML = `
+                    <div class="flex items-center space-x-2 text-primary-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h3 class="text-lg font-medium">Prediction Result</h3>
+                    </div>
+                    <div class="mt-4 flex items-baseline space-x-2">
+                        <p class="text-3xl font-bold text-white">${result.predicted_temperature.toFixed(2)}</p>
+                        <span class="text-lg text-gray-400">°C</span>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-400">Predicted hot metal temperature based on input parameters</p>
+                `;
+
+                // Add success animation
+                resultDiv.classList.add('animate-fade-in');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                // Error state
+                resultDiv.innerHTML = `
+                    <div class="flex items-center space-x-2 text-red-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h3 class="text-lg font-medium">Prediction Failed</h3>
+                    </div>
+                    <p class="mt-2 text-red-400">There was an error calculating the prediction. Please check your inputs and try again.</p>
+                    <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors duration-200">
+                        Retry
+                    </button>
+                `;
+            }
+        });
+
+        // Sinter Plant Form Handler
+        document.getElementById('sinterPlantForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                basicity: document.getElementById('basicity').value,
+                sio2_content: document.getElementById('sio2_content').value,
+                al2o3_content: document.getElementById('al2o3_content').value,
+                mgo_content: document.getElementById('mgo_content').value,
+                bed_height: document.getElementById('bed_height').value,
+                ignition_temperature: document.getElementById('ignition_temperature').value
+            };
+
+            // Validate that all fields have values
+            for (const [key, value] of Object.entries(formData)) {
+                if (!value) {
+                    alert(`Please fill in ${key.replace(/_/g, ' ')}`);
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch('/api/sinter-plant/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                const resultDiv = document.getElementById('sinterPlantResult');
+                resultDiv.classList.remove('hidden');
+                resultDiv.innerHTML = `
+                    <h3 class="text-lg font-medium text-primary-400">Predicted Productivity:</h3>
+                    <p class="text-3xl font-bold text-white mt-2">${result.predicted_productivity.toFixed(2)} t/m²h</p>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error predicting productivity. Please try again.');
+            }
+        });
+
+        async function loadModelPerformance() {
+            const currentTheme = document.documentElement.classList.contains('dark') ? darkTheme : lightTheme;
+            try {
+                const response = await fetch('/api/models/performance');
+                const data = await response.json();
+
+                // Update metrics with proper contrast
+                const metricsColor = document.documentElement.classList.contains('dark') ? 'text-primary-300' : 'text-gray-900';
+                document.getElementById('blast-r2').className = `text-2xl font-bold ${metricsColor}`;
+                document.getElementById('blast-rmse').className = `text-2xl font-bold ${metricsColor}`;
+                document.getElementById('sinter-r2').className = `text-2xl font-bold ${metricsColor}`;
+                document.getElementById('sinter-rmse').className = `text-2xl font-bold ${metricsColor}`;
+
+                document.getElementById('blast-r2').textContent = data.blast_furnace.test_r2.toFixed(3);
+                document.getElementById('blast-rmse').textContent = data.blast_furnace.test_rmse.toFixed(2);
+                document.getElementById('sinter-r2').textContent = data.sinter_plant.test_r2.toFixed(3);
+                document.getElementById('sinter-rmse').textContent = data.sinter_plant.test_rmse.toFixed(2);
+
+                // Plot Feature Importance with enhanced visibility
+                const blastFeatures = Object.entries(data.blast_furnace.feature_importance);
+                Plotly.newPlot('blast-feature-importance', [{
+                    y: blastFeatures.map(f => f[0]),
+                    x: blastFeatures.map(f => f[1] * 100), // Convert to percentage
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)',
+                        line: {
+                            color: 'rgba(14, 165, 233, 1)',
+                            width: 1.5
+                        }
+                    },
+                    text: blastFeatures.map(f => (f[1] * 100).toFixed(1) + '%'),
+                    textposition: 'auto',
+                    textfont: {
+                        size: 13,
+                        color: currentTheme.font.color,
+                        family: 'Arial, sans-serif'
+                    }
+                }], {
+                    ...currentTheme,
+                    title: {
+                        text: 'Feature Importance',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    margin: { l: 160, r: 30, t: 50, b: 50 },
+                    bargap: 0.3,
+                    xaxis: {
+                        title: 'Importance (%)',
+                        ticksuffix: '%',
+                        showgrid: true,
+                        gridwidth: 1,
+                        gridcolor: currentTheme.gridcolor || 'rgba(128, 128, 128, 0.2)'
+                    },
+                    yaxis: {
+                        title: 'Features',
+                        tickfont: {
+                            size: 12
+                        }
+                    }
+                });
+
+                // Enhanced scatter plot
+                Plotly.newPlot('blast-actual-vs-predicted', [{
+                    x: data.blast_furnace.actual_vs_predicted.test.actual,
+                    y: data.blast_furnace.actual_vs_predicted.test.predicted,
+                    mode: 'markers',
+                    type: 'scatter',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)',
+                        line: {
+                            color: 'rgba(14, 165, 233, 1)',
+                            width: 1.5
+                        },
+                        size: 10
+                    },
+                    hovertemplate: 'Actual: %{x:.1f}°C<br>Predicted: %{y:.1f}°C<extra></extra>'
+                }], {
+                    ...currentTheme,
+                    title: {
+                        text: 'Actual vs Predicted Temperature',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    xaxis: { 
+                        title: {
+                            text: 'Actual Temperature (°C)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        showgrid: true,
+                        gridwidth: 1,
+                        gridcolor: currentTheme.gridcolor || 'rgba(128, 128, 128, 0.2)'
+                    },
+                    yaxis: { 
+                        title: {
+                            text: 'Predicted Temperature (°C)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        showgrid: true,
+                        gridwidth: 1,
+                        gridcolor: currentTheme.gridcolor || 'rgba(128, 128, 128, 0.2)'
+                    }
+                });
+
+                // Enhanced histogram
+                Plotly.newPlot('blast-residuals', [{
+                    x: residualsData.blast_furnace.test,
+                    type: 'histogram',
+                    marker: {
+                        color: 'rgba(14, 165, 233, 0.8)',
+                        line: {
+                            color: 'rgba(14, 165, 233, 1)',
+                            width: 1.5
+                        }
+                    },
+                    opacity: 0.8,
+                    nbinsx: 20,
+                    histnorm: 'probability',
+                    hovertemplate: 'Error: %{x:.1f}°C<br>Frequency: %{y:.1%}<extra></extra>'
+                }], {
+                    ...currentTheme,
+                    title: {
+                        text: 'Prediction Error Distribution',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    xaxis: { 
+                        title: {
+                            text: 'Prediction Error (°C)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        showgrid: true,
+                        gridwidth: 1,
+                        gridcolor: currentTheme.gridcolor || 'rgba(128, 128, 128, 0.2)'
+                    },
+                    yaxis: { 
+                        title: {
+                            text: 'Probability',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        tickformat: ',.1%',
+                        showgrid: true,
+                        gridwidth: 1,
+                        gridcolor: currentTheme.gridcolor || 'rgba(128, 128, 128, 0.2)'
+                    },
+                    bargap: 0.1
+                });
+
+            } catch (error) {
+                console.error('Error loading model performance:', error);
+            }
+        }
+    </script>
+
+    <!-- Chatbot Interface -->
+    <div id="chatbot" class="fixed bottom-6 right-6 z-50">
+        <!-- Chat Button -->
+        <button id="chatToggle" class="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group">
+            <!-- Close Icon -->
+            <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            <!-- Chat Icon -->
+            <svg id="chatIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+            <!-- Notification Dot -->
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chatWindow" class="hidden fixed bottom-24 right-6 w-96 h-[32rem] rounded-2xl shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Glass Background -->
+            <div class="absolute inset-0 rounded-2xl backdrop-blur-xl bg-white/10 dark:bg-dark-800/90 border dark:border-white/10 border-gray-200"></div>
+            
+            <!-- Chat Content -->
+            <div class="relative flex flex-col h-full">
+                <!-- Chat Header -->
+                <div class="flex items-center justify-between p-4 border-b dark:border-white/10 border-gray-200">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-dark-800"></span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold dark:text-white text-gray-900">Steel Plant Assistant</h3>
+                            <p class="text-xs dark:text-gray-400 text-gray-600">Online</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4" style="scrollbar-width: thin;">
+                    <!-- Welcome Message -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="dark:bg-white/10 bg-gray-100 rounded-2xl rounded-tl-none p-4 dark:text-white text-gray-900">
+                                <p>Hello! I'm your Steel Plant Assistant. How can I help you today with plant operations or analytics?</p>
+                            </div>
+                            <span class="text-xs dark:text-gray-400 text-gray-600 mt-1">Just now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 border-t dark:border-white/10 border-gray-200">
+                    <form class="flex items-center space-x-3">
+                        <div class="relative flex-1">
+                            <input type="text" placeholder="Type your message..." class="w-full bg-white/10 dark:bg-dark-900/50 border dark:border-white/10 border-gray-200 rounded-xl pl-4 pr-12 py-3 dark:text-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:border-primary-500">
+                            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <button type="submit" class="flex-shrink-0 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl p-3 hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chatbot Toggle Functionality
+        const chatToggle = document.getElementById('chatToggle');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatIcon = document.getElementById('chatIcon');
+        const closeIcon = document.getElementById('closeIcon');
+
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+            chatIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+            
+            // Animate opening/closing
+            setTimeout(() => {
+                chatWindow.classList.toggle('opacity-0');
+                chatWindow.classList.toggle('scale-95');
+            }, 0);
+        });
+    </script>
+</body>
+</html> 

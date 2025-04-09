@@ -1,0 +1,4500 @@
+                    angleLines: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Pellet feature importance chart
+function createPelletFeatureChart() {
+    const ctx = document.getElementById('pelletFeatureChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: ['Induration Temp', 'Induration Time', 'Bentonite Addition', 'Moisture Content', 'Concentrate Fe', 'Disc Speed'],
+            datasets: [{
+                label: 'Feature Importance',
+                data: [0.32, 0.22, 0.18, 0.12, 0.09, 0.07],
+                backgroundColor: [
+                    '#2563eb', '#4f46e5', '#7c3aed', '#a855f7', '#ec4899', '#f43f5e'
+                ]
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Moisture chart
+function createMoistureChart() {
+    const ctx = document.getElementById('moistureChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+            datasets: [{
+                label: 'Filter Cake Moisture (%)',
+                data: [10.2, 10.0, 9.9, 9.7, 9.8, 9.8, 9.7],
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }, {
+                label: 'Target',
+                data: [9.5, 9.5, 9.5, 9.5, 9.5, 9.5, 9.5],
+                borderColor: '#64748b',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 9.0,
+                    max: 10.5,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Filtration chart
+function createFiltrationChart() {
+    const ctx = document.getElementById('filtrationChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+            datasets: [{
+                label: 'Filtration Rate (kg/m²/h)',
+                data: [81.0, 81.8, 82.5, 83.5, 84.0, 82.8, 82.0],
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }, {
+                label: 'Solids Recovery (%)',
+                data: [98.5, 98.65, 98.8, 99.0, 99.1, 99.0, 98.9],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.0)',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.3,
+                yAxisID: 'y1'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 80,
+                    max: 85,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Filtration Rate'
+                    }
+                },
+                y1: {
+                    beginAtZero: false,
+                    min: 98,
+                    max: 100,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Solids Recovery'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Initialize the knowledge search
+function initKnowledgeSearch() {
+    const searchForm = document.getElementById('knowledge-search');
+    if (!searchForm) return;
+    
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const query = document.getElementById('search-query').value.trim();
+        if (!query) return;
+        
+        // In a real implementation, this would query the knowledge base
+        // For the demo, we'll just update the UI with the query
+        
+        // Add the query to recent queries
+        const queryList = document.querySelector('.query-list');
+        if (queryList) {
+            const queryItem = document.createElement('div');
+            queryItem.className = 'query-item';
+            queryItem.textContent = query;
+            
+            // Add to the beginning
+            if (queryList.firstChild) {
+                queryList.insertBefore(queryItem, queryList.firstChild);
+            } else {
+                queryList.appendChild(queryItem);
+            }
+            
+            // Remove excess queries
+            const queryItems = queryList.querySelectorAll('.query-item');
+            if (queryItems.length > 5) {
+                queryList.removeChild(queryItems[queryItems.length - 1]);
+            }
+        }
+        
+        // Clear the search input
+        document.getElementById('search-query').value = '';
+    });
+    
+    // Make the query items clickable
+    const queryItems = document.querySelectorAll('.query-item');
+    queryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            document.getElementById('search-query').value = this.textContent;
+        });
+    });
+}
+"""
+        
+        # Write JavaScript file
+        with open(os.path.join(self.config.web_dir, 'dashboard.js'), 'w') as f:
+            f.write(js_content)
+    
+    def _create_data_json(self):
+        """Create data JSON file for the dashboard"""
+        dashboard_data = {
+            "overview": {
+                "kpis": [
+                    {"name": "Hot Metal Production", "value": 7850, "target": 8000, "unit": "tons/day"},
+                    {"name": "Energy Consumption", "value": 22.3, "target": 21.0, "unit": "GJ/ton"},
+                    {"name": "Quality Index", "value": 94.5, "target": 95.0, "unit": "%"},
+                    {"name": "Yield", "value": 97.2, "target": 98.0, "unit": "%"}
+                ],
+                "production_trend": [
+                    {"month": "Jan", "value": 7650},
+                    {"month": "Feb", "value": 7800},
+                    {"month": "Mar", "value": 7700},
+                    {"month": "Apr", "value": 7900},
+                    {"month": "May", "value": 7850},
+                    {"month": "Jun", "value": 7950},
+                    {"month": "Jul", "value": 7850}
+                ],
+                "quality_params": [
+                    {"param": "Hot Metal Si", "current": 0.52, "target": 0.45},
+                    {"param": "Hot Metal S", "current": 0.025, "target": 0.03},
+                    {"param": "Sinter TI", "current": 74.2, "target": 75.0},
+                    {"param": "Pellet CCS", "current": 245, "target": 250},
+                    {"param": "Pellet TI", "current": 93.5, "target": 94.0}
+                ],
+                "alerts": [
+                    {
+                        "type": "critical",
+                        "time": "10:15",
+                        "title": "High Silicon Content in Hot Metal",
+                        "details": "Current: 0.52% | Threshold: 0.45%",
+                        "recommendation": "Decrease blast temperature by 15°C"
+                    },
+                    {
+                        "type": "warning",
+                        "time": "09:30",
+                        "title": "Low Pellet Cold Crushing Strength",
+                        "details": "Average: 245 kg/pellet | Target: >250 kg/pellet",
+                        "recommendation": "Increase induration temperature to 1320°C"
+                    },
+                    {
+                        "type": "info",
+                        "time": "08:45",
+                        "title": "Maintenance Reminder",
+                        "details": "Schedule filter cloth cleaning for Filter Press #2 within 24 hours"
+                    }
+                ]
+            },
+            "blast_furnace": {
+                "current_status": {
+                    "hot_metal_temp": 1495,
+                    "silicon_content": 0.52,
+                    "fuel_rate": 445,
+                    "blast_temperature": 1180,
+                    "oxygen_enrichment": 6.5
+                },
+                "time_series": [
+                    {"time": "06:00", "hot_metal_temp": 1475, "silicon": 0.41, "fuel_rate": 460},
+                    {"time": "07:00", "hot_metal_temp": 1480, "silicon": 0.43, "fuel_rate": 456},
+                    {"time": "08:00", "hot_metal_temp": 1483, "silicon": 0.45, "fuel_rate": 452},
+                    {"time": "09:00", "hot_metal_temp": 1488, "silicon": 0.47, "fuel_rate": 449},
+                    {"time": "10:00", "hot_metal_temp": 1492, "silicon": 0.49, "fuel_rate": 446},
+                    {"time": "11:00", "hot_metal_temp": 1495, "silicon": 0.51, "fuel_rate": 443},
+                    {"time": "12:00", "hot_metal_temp": 1490, "silicon": 0.49, "fuel_rate": 445}
+                ],
+                "recommendations": [
+                    {
+                        "parameter": "Blast Temperature",
+                        "current": 1180,
+                        "recommended": 1165,
+                        "impact": "Expected Si reduction: 0.08%"
+                    },
+                    {
+                        "parameter": "Moisture Content",
+                        "current": 18,
+                        "recommended": 20,
+                        "impact": "Expected Si reduction: 0.05%"
+                    },
+                    {
+                        "parameter": "Coal Injection Rate",
+                        "current": 175,
+                        "recommended": 175,
+                        "impact": "No change recommended"
+                    }
+                ],
+                "model_confidence": 85
+            },
+            "sinter": {
+                "quality_metrics": {
+                    "tumbler_index": 74.2,
+                    "reducibility": 68.5,
+                    "productivity": 1.36
+                },
+                "quality_prediction": [
+                    {"property": "Tumbler Index", "actual": 74.2, "predicted": 75.0},
+                    {"property": "Reducibility", "actual": 68.5, "predicted": 69.0},
+                    {"property": "Productivity", "actual": 1.36, "predicted": 1.40}
+                ],
+                "feature_importance": [
+                    {"feature": "Basicity", "importance": 0.28},
+                    {"feature": "Coke Rate", "importance": 0.22},
+                    {"feature": "Bed Height", "importance": 0.15},
+                    {"feature": "Burn Through Temp", "importance": 0.12},
+                    {"feature": "Return Fines", "importance": 0.08},
+                    {"feature": "Ignition Temp", "importance": 0.06}
+                ],
+                "recommendations": [
+                    {
+                        "parameter": "Basicity (CaO/SiO2)",
+                        "current": 1.9,
+                        "recommended": 2.0,
+                        "impact": "Expected TI improvement: +0.6"
+                    },
+                    {
+                        "parameter": "Coke Rate",
+                        "current": 7.2,
+                        "recommended": 7.5,
+                        "impact": "Expected TI improvement: +0.8"
+                    },
+                    {
+                        "parameter": "Bed Height",
+                        "current": 550,
+                        "recommended": 565,
+                        "impact": "Expected productivity: +0.04 t/m²/h"
+                    }
+                ]
+            },
+            "mineral_processing": {
+                "crushing": {
+                    "current_status": {
+                        "feed_rate": 1000,
+                        "power_consumption": 780,
+                        "product_p80": 10.2
+                    },
+                    "power_throughput": [
+                        {"feed_rate": 900, "power": 730},
+                        {"feed_rate": 920, "power": 745},
+                        {"feed_rate": 950, "power": 760},
+                        {"feed_rate": 980, "power": 770},
+                        {"feed_rate": 1000, "power": 780},
+                        {"feed_rate": 1020, "power": 795},
+                        {"feed_rate": 1050, "power": 805},
+                        {"feed_rate": 1080, "power": 820}
+                    ],
+                    "size_distribution": [
+                        {"size": 0, "current": 0, "target": 0},
+                        {"size": 2, "current": 5, "target": 8},
+                        {"size": 4, "current": 15, "target": 20},
+                        {"size": 6, "current": 30, "target": 35},
+                        {"size": 8, "current": 60, "target": 65},
+                        {"size": 10, "current": 80, "target": 85},
+                        {"size": 12, "current": 92, "target": 95},
+                        {"size": 14, "current": 97, "target": 98},
+                        {"size": 16, "current": 99, "target": 100},
+                        {"size": 18, "current": 100, "target": 100},
+                        {"size": 20, "current": 100, "target": 100}
+                    ],
+                    "recommendations": [
+                        {
+                            "parameter": "Primary CSS",
+                            "current": 175,
+                            "recommended": 180,
+                            "impact": "Expected power reduction: 15 kW"
+                        },
+                        {
+                            "parameter": "Secondary CSS",
+                            "current": 50,
+                            "recommended": 48,
+                            "impact": "Expected P80 reduction: 0.3 mm"
+                        },
+                        {
+                            "parameter": "Screen Aperture",
+                            "current": 10,
+                            "recommended": 9,
+                            "impact": "Expected P80 reduction: 0.2 mm"
+                        }
+                    ]
+                },
+                "pelletization": {
+                    "quality_metrics": {
+                        "cold_crushing_strength": 245,
+                        "tumble_index": 93.5,
+                        "abrasion_index": 5.2
+                    },
+                    "radar_data": [
+                        {"metric": "Cold Crushing Strength", "current": 245, "target": 270},
+                        {"metric": "Tumble Index", "current": 93.5, "target": 94.0},
+                        {"metric": "Abrasion Index", "current": 5.2, "target": 4.8},
+                        {"metric": "Porosity", "current": 24.5, "target": 24.0},
+                        {"metric": "Reducibility", "current": 68, "target": 70}
+                    ],
+                    "feature_importance": [
+                        {"feature": "Induration Temp", "importance": 0.32},
+                        {"feature": "Induration Time", "importance": 0.22},
+                        {"feature": "Bentonite Addition", "importance": 0.18},
+                        {"feature": "Moisture Content", "importance": 0.12},
+                        {"feature": "Concentrate Fe", "importance": 0.09},
+                        {"feature": "Disc Speed", "importance": 0.07}
+                    ],
+                    "recommendations": [
+                        {
+                            "parameter": "Bentonite Addition",
+                            "current": 0.7,
+                            "recommended": 0.8,
+                            "impact": "Expected CCS improvement: +8 kg/pellet"
+                        },
+                        {
+                            "parameter": "Induration Temperature",
+                            "current": 1300,
+                            "recommended": 1320,
+                            "impact": "Expected CCS improvement: +15 kg/pellet"
+                        },
+                        {
+                            "parameter": "Induration Time",
+                            "current": 25,
+                            "recommended": 27,
+                            "impact": "Expected CCS improvement: +5 kg/pellet"
+                        }
+                    ]
+                },
+                "dewatering": {
+                    "current_status": {
+                        "filter_cake_moisture": 9.8,
+                        "filtration_rate": 82.0,
+                        "solids_recovery": 98.7
+                    },
+                    "time_series": [
+                        {"time": "06:00", "moisture": 10.2, "filtration_rate": 81.0, "recovery": 98.5},
+                        {"time": "07:00", "moisture": 10.0, "filtration_rate": 81.8, "recovery": 98.65},
+                        {"time": "08:00", "moisture": 9.9, "filtration_rate": 82.5, "recovery": 98.8},
+                        {"time": "09:00", "moisture": 9.7, "filtration_rate": 83.5, "recovery": 99.0},
+                        {"time": "10:00", "moisture": 9.8, "filtration_rate": 84.0, "recovery": 99.1},
+                        {"time": "11:00", "moisture": 9.8, "filtration_rate": 82.8, "recovery": 99.0},
+                        {"time": "12:00", "moisture": 9.7, "filtration_rate": 82.0, "recovery": 98.9}
+                    ],
+                    "recommendations": [
+                        {
+                            "parameter": "Flocculant Dosage",
+                            "current": 20,
+                            "recommended": 22,
+                            "impact": "Expected turbidity reduction: 2 NTU"
+                        },
+                        {
+                            "parameter": "Filter Pressure",
+                            "current": 8.0,
+                            "recommended": 8.5,
+                            "impact": "Expected moisture reduction: 0.3 %"
+                        },
+                        {
+                            "parameter": "Blow Time",
+                            "current": 1.0,
+                            "recommended": 1.2,
+                            "impact": "Expected moisture reduction: 0.5 %"
+                        }
+                    ]
+                }
+            },
+            "knowledge": {
+                "recent_queries": [
+                    "blast furnace temperature",
+                    "sinter basicity optimization",
+                    "pellet quality improvement",
+                    "crusher power consumption",
+                    "filter cake moisture reduction"
+                ],
+                "sample_results": [
+                    {
+                        "title": "Blast Furnace Temperature Control",
+                        "content": "The optimal blast temperature range for the blast furnace is 1080-1220°C. Operating below 1080°C can lead to reduced hot metal temperature and increased fuel consumption.",
+                        "relevance": 92
+                    },
+                    {
+                        "title": "Silicon Control in Hot Metal",
+                        "content": "When the silicon content in hot metal exceeds 0.45%, it indicates excessive temperature in the lower part of the furnace or reduced slag basicity.",
+                        "relevance": 85
+                    },
+                    {
+                        "title": "Moisture Effect on Blast Furnace",
+                        "content": "The moisture in the blast should be controlled between 15-25 g/Nm³ to maintain stable operation. High moisture increases fuel rate and reduces flame temperature.",
+                        "relevance": 78
+                    }
+                ]
+            }
+        }
+        
+        # Write JSON file
+        with open(os.path.join(self.config.web_dir, 'dashboard-data.json'), 'w') as f:
+            json.dump(dashboard_data, f, indent=2)
+
+#################################
+# MAIN APPLICATION
+#################################
+
+class JSWSteelMVP:
+    """Main class for the JSW Steel MVP application"""
+    
+    def __init__(self, base_dir='jsw_mvp', synthetic_data=True):
+        """Initialize the JSW Steel MVP application"""
+        # Configuration
+        self.config = Config()
+        self.config.base_dir = base_dir
+        
+        # Set paths in configuration
+        self.config.data_dir = os.path.join(base_dir, "data")
+        self.config.model_dir = os.path.join(base_dir, "models")
+        self.config.results_dir = os.path.join(base_dir, "results")
+        self.config.web_dir = os.path.join(base_dir, "web")
+        
+        self.config.blast_furnace_dir = os.path.join(self.config.data_dir, "blast_furnace")
+        self.config.sinter_dir = os.path.join(self.config.data_dir, "sinter")
+        self.config.mineral_processing_dir = os.path.join(self.config.data_dir, "mineral_processing")
+        self.config.docs_dir = os.path.join(self.config.data_dir, "technical_documents")
+        
+        # Create directories
+        self.config._create_directories()
+        
+        # Use synthetic data?
+        self.synthetic_data = synthetic_data
+        
+        # Components
+        self.data_generator = None
+        self.model_trainer = None
+        self.model_predictor = None
+        self.dashboard_generator = None
+        
+        # Server for dashboard
+        self.server = None
+        self.server_thread = None
+        
+        # Trained models
+        self.models = {}
+        
+        logger.info("JSW Steel MVP initialized")
+    
+    def setup(self):
+        """Setup the MVP by generating data and training models"""
+        # Generate synthetic data if required
+        if self.synthetic_data:
+            self._generate_synthetic_data()
+        
+        # Train models
+        self._train_models()
+        
+        # Generate dashboard
+        self._generate_dashboard()
+        
+        logger.info("JSW Steel MVP setup complete")
+    
+    def _generate_synthetic_data(self):
+        """Generate synthetic data for training and demonstration"""
+        logger.info("Generating synthetic data...")
+        
+        # Create data generator
+        self.data_generator = SyntheticDataGenerator(self.config)
+        
+        # Generate all data
+        self.data_generator.generate_all_data()
+    
+    def _train_models(self):
+        """Train all models"""
+        logger.info("Training models...")
+        
+        # Create model trainer
+        self.model_trainer = ModelTrainer(self.config)
+        
+        # Train all models
+        self.models, self.results = self.model_trainer.train_all_models()
+        
+        # Create model predictor
+        self.model_predictor = ModelPredictor(self.config, self.models)
+    
+    def _generate_dashboard(self):
+        """Generate the dashboard"""
+        logger.info("Generating dashboard...")
+        
+        # Create dashboard generator
+        self.dashboard_generator = DashboardGenerator(self.config)
+        
+        # Generate dashboard
+        self.dashboard_file = self.dashboard_generator.generate_dashboard()
+    
+    def start_dashboard(self, port=8000):
+        """Start the dashboard web server"""
+        logger.info(f"Starting dashboard server on port {port}...")
+        
+        # Change to the web directory
+        os.chdir(self.config.web_dir)
+        
+        # Create and start the HTTP server
+        handler = SimpleHTTPRequestHandler
+        self.server = HTTPServer(('', port), handler)
+        self.server_thread = threading.Thread(target=self.server.serve_forever)
+        self.server_thread.daemon = True
+        self.server_thread.start()
+        
+        # Open browser
+        webbrowser.open(f'http://localhost:{port}')
+        
+        logger.info(f"Dashboard server running at http://localhost:{port}")
+        return self.server
+    
+    def stop_dashboard(self):
+        """Stop the dashboard web server"""
+        if self.server:
+            logger.info("Stopping dashboard server...")
+            self.server.shutdown()
+            self.server = None
+            logger.info("Dashboard server stopped")
+    
+    def make_prediction(self, process_area, input_data):
+        """Make prediction using the trained models"""
+        if not self.model_predictor:
+            logger.error("Model predictor not initialized")
+            return None
+        
+        return self.model_predictor.predict(process_area, input_data)
+    
+    def optimize_parameters(self, process_area, current_params, target):
+        """Optimize parameters for a specific process area"""
+        if not self.model_predictor:
+            logger.error("Model predictor not initialized")
+            return None
+        
+        return self.model_predictor.optimize_parameters(process_area, current_params, target)
+    
+    def query_knowledge_base(self, query_text, k=3):
+        """Query the knowledge base"""
+        if not self.model_predictor:
+            logger.error("Model predictor not initialized")
+            return []
+        
+        return self.model_predictor.query_knowledge_base(query_text, k)
+    
+    def run_demo(self):
+        """Run a demonstration of the JSW Steel MVP"""
+        logger.info("Starting JSW Steel MVP demo...")
+        
+        # Start the dashboard
+        self.start_dashboard()
+        
+        try:
+            # Show demo information
+            print("\n" + "=" * 80)
+            print("JSW STEEL TORANAGALLU PLANT - INTEGRATED MVP DEMO")
+            print("=" * 80)
+            
+            print("\nThis demonstration includes:")
+            print("1. Mineral Processing (Crushing, Pelletization, Dewatering)")
+            print("2. Sinter Plant Operations")
+            print("3. Blast Furnace Operations")
+            print("4. Knowledge Retrieval System")
+            
+            print("\nThe dashboard is now open in your web browser.")
+            print("Explore the different tabs to see predictions, optimizations, and visualizations.")
+            
+            print("\nPress Ctrl+C to stop the demo...")
+            
+            # Keep the demo running until interrupted
+            while True:
+                time.sleep(1)
+        
+        except KeyboardInterrupt:
+            print("\nStopping demo...")
+        
+        finally:
+            # Stop the dashboard
+            self.stop_dashboard()
+            
+            print("Demo completed. Thank you for trying the JSW Steel MVP!")
+
+#################################
+# SCRIPT EXECUTION
+#################################
+
+def main():
+    """Main function to run the JSW Steel MVP"""
+    # Parse command line arguments
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="JSW Steel Plant Integrated MVP")
+    parser.add_argument('--no-synthetic', action='store_true', help='Do not generate synthetic data')
+    parser.add_argument('--port', type=int, default=8000, help='Port for the dashboard server')
+    parser.add_argument('--dir', type=str, default='jsw_mvp', help='Base directory for the MVP')
+    args = parser.parse_args()
+    
+    # Create and setup the JSW Steel MVP
+    mvp = JSWSteelMVP(
+        base_dir=args.dir,
+        synthetic_data=not args.no_synthetic
+    )
+    
+    # Setup the MVP
+    mvp.setup()
+    
+    # Run the demo
+    mvp.run_demo()
+
+if __name__ == "__main__":
+    main()
+    padding: 20px 0;
+    border-bottom: 1px solid #e1e5eb;
+}
+
+.logo h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.logo p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-indicator {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status-indicator.online {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.last-updated {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* Navigation */
+nav {
+    margin: 20px 0;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+nav ul li {
+    flex-grow: 1;
+}
+
+nav ul li a {
+    display: block;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #f8fafc;
+    color: #2563eb;
+}
+
+nav ul li a.active {
+    background-color: #2563eb;
+    color: #fff;
+}
+
+/* Main Content */
+main {
+    margin-top: 20px;
+}
+
+.tab-content {
+    display: none;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    margin-bottom: 20px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* KPI Cards */
+.kpi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    display: inline-block;
+}
+
+.kpi-unit {
+    font-size: 14px;
+    color: #64748b;
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.kpi-target {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.kpi-bar {
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.kpi-progress {
+    height: 100%;
+    background-color: #10b981;
+    border-radius: 3px;
+}
+
+.kpi-progress.warning {
+    background-color: #f59e0b;
+}
+
+.kpi-progress.danger {
+    background-color: #ef4444;
+}
+
+/* Chart Container */
+.chart-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.chart-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+/* Alerts */
+.alerts-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.alerts-container h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 15px;
+}
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.alert:last-child {
+    margin-bottom: 0;
+}
+
+.alert.critical {
+    background-color: #fee2e2;
+    border-left: 4px solid #ef4444;
+}
+
+.alert.warning {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+}
+
+.alert.info {
+    background-color: #dbeafe;
+    border-left: 4px solid #3b82f6;
+}
+
+.alert.success {
+    background-color: #dcfce7;
+    border-left: 4px solid #10b981;
+}
+
+.alert-time {
+    font-size: 12px;
+    color: #64748b;
+    min-width: 50px;
+}
+
+.alert-content {
+    flex-grow: 1;
+}
+
+.alert-content h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.alert.critical h4 {
+    color: #b91c1c;
+}
+
+.alert.warning h4 {
+    color: #b45309;
+}
+
+.alert.info h4 {
+    color: #1d4ed8;
+}
+
+.alert.success h4 {
+    color: #047857;
+}
+
+.alert-content p {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.alert-recommendation {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+/* Status Cards */
+.status-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.status-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.status-card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+.param-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.param-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.param-name {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.param-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.param-value.critical {
+    color: #ef4444;
+}
+
+.param-value.warning {
+    color: #f59e0b;
+}
+
+/* Optimization Container */
+.optimization-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.optimization-container h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 15px;
+}
+
+.optimization-container p {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+.recommendations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.recommendation-card {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.recommendation-card h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+.param-current, .param-recommended {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.param-impact {
+    font-size: 14px;
+    font-weight: 500;
+    color: #059669;
+    margin-top: 10px;
+}
+
+.model-info {
+    background-color: #dbeafe;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 14px;
+    color: #1e40af;
+}
+
+/* Sub Tabs */
+.sub-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sub-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #64748b;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.sub-tab:hover {
+    color: #2563eb;
+}
+
+.sub-tab.active {
+    color: #2563eb;
+    border-bottom: 2px solid #2563eb;
+}
+
+.sub-tab-content {
+    display: none;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+/* Knowledge Base */
+.search-container {
+    margin-bottom: 30px;
+}
+
+.search-container form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-container input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+.search-container input[type="text"]:focus {
+    border-color: #2563eb;
+}
+
+.search-container button {
+    padding: 12px 25px;
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #1d4ed8;
+}
+
+.search-results, .recent-queries {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.search-results h3, .recent-queries h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 15px;
+}
+
+.result-item {
+    padding: 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+.result-item p {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.result-relevance {
+    font-size: 12px;
+    color: #64748b;
+    text-align: right;
+}
+
+.query-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.query-item {
+    padding: 8px 15px;
+    background-color: #f1f5f9;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #1e293b;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.query-item:hover {
+    background-color: #e2e8f0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 30px;
+    border-top: 1px solid #e1e5eb;
+}
+
+footer p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    nav ul {
+        flex-direction: column;
+    }
+    
+    .kpi-container, .chart-container, .status-cards, .recommendations {
+        grid-template-columns: 1fr;
+    }
+}
+"""
+        
+        # Write CSS file
+        with open(os.path.join(self.config.web_dir, 'styles.css'), 'w') as f:
+            f.write(css_content)
+    
+    def _create_js(self):
+        """Create the JavaScript file for the dashboard"""
+        js_content = """// JSW Steel Dashboard JavaScript
+
+// Wait for the document to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Set the current time in the dashboard
+    updateDateTime();
+    
+    // Initialize the main tabs
+    initTabs();
+    
+    // Initialize the sub-tabs
+    initSubTabs();
+    
+    // Initialize charts
+    initCharts();
+    
+    // Initialize the knowledge search
+    initKnowledgeSearch();
+});
+
+// Update the date and time in the dashboard
+function updateDateTime() {
+    const now = new Date();
+    const options = { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    };
+    const formattedDate = now.toLocaleDateString('en-US', options);
+    document.getElementById('update-time').textContent = formattedDate;
+    
+    // Update every minute
+    setTimeout(updateDateTime, 60000);
+}
+
+// Initialize the main tabs
+function initTabs() {
+    const tabLinks = document.querySelectorAll('nav ul li a');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links
+            tabLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Show corresponding tab content
+            const tabId = this.getAttribute('data-tab');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+}
+
+// Initialize the sub-tabs
+function initSubTabs() {
+    const subTabButtons = document.querySelectorAll('.sub-tab');
+    const subTabContents = document.querySelectorAll('.sub-tab-content');
+    
+    subTabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            subTabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Show corresponding content
+            const subtabId = this.getAttribute('data-subtab');
+            subTabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(subtabId).classList.add('active');
+        });
+    });
+}
+
+// Initialize all charts
+function initCharts() {
+    // Overview charts
+    createProductionChart();
+    createQualityChart();
+    
+    // Blast furnace charts
+    createHotMetalTempChart();
+    createSiliconChart();
+    
+    // Sinter charts
+    createSinterQualityChart();
+    createSinterFeatureChart();
+    
+    // Crushing charts
+    createCrushingPowerChart();
+    createCrushingSizeChart();
+    
+    // Pelletization charts
+    createPelletQualityChart();
+    createPelletFeatureChart();
+    
+    // Dewatering charts
+    createMoistureChart();
+    createFiltrationChart();
+}
+
+// Production chart
+function createProductionChart() {
+    const ctx = document.getElementById('productionChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'Hot Metal Production (tons/day)',
+                data: [7650, 7800, 7700, 7900, 7850, 7950, 7850],
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 7500,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Quality chart
+function createQualityChart() {
+    const ctx = document.getElementById('qualityChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Hot Metal Si', 'Hot Metal S', 'Sinter TI', 'Pellet CCS', 'Pellet TI'],
+            datasets: [{
+                label: 'Current',
+                data: [0.52, 0.025, 74.2, 245, 93.5],
+                backgroundColor: '#2563eb'
+            }, {
+                label: 'Target',
+                data: [0.45, 0.03, 75.0, 250, 94.0],
+                backgroundColor: '#a3a3a3'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Hot metal temperature chart
+function createHotMetalTempChart() {
+    const ctx = document.getElementById('hotMetalTempChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+            datasets: [{
+                label: 'Hot Metal Temp (°C)',
+                data: [1475, 1480, 1483, 1488, 1492, 1495, 1490],
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 1470,
+                    max: 1500,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Silicon chart
+function createSiliconChart() {
+    const ctx = document.getElementById('siliconChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00'],
+            datasets: [{
+                label: 'Silicon Content (%)',
+                data: [0.41, 0.43, 0.45, 0.47, 0.49, 0.51, 0.49],
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }, {
+                label: 'Target Limit',
+                data: [0.45, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45],
+                borderColor: '#64748b',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 0.4,
+                    max: 0.55,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Sinter quality chart
+function createSinterQualityChart() {
+    const ctx = document.getElementById('sinterQualityChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Tumbler Index', 'Reducibility', 'Productivity'],
+            datasets: [{
+                label: 'Actual',
+                data: [74.2, 68.5, 1.36],
+                backgroundColor: '#2563eb'
+            }, {
+                label: 'Predicted',
+                data: [75.0, 69.0, 1.40],
+                backgroundColor: '#10b981'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Sinter feature importance chart
+function createSinterFeatureChart() {
+    const ctx = document.getElementById('sinterFeatureChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: ['Basicity', 'Coke Rate', 'Bed Height', 'Burn Through Temp', 'Return Fines', 'Ignition Temp'],
+            datasets: [{
+                label: 'Feature Importance',
+                data: [0.28, 0.22, 0.15, 0.12, 0.08, 0.06],
+                backgroundColor: [
+                    '#2563eb', '#4f46e5', '#7c3aed', '#a855f7', '#ec4899', '#f43f5e'
+                ]
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Crushing power chart
+function createCrushingPowerChart() {
+    const ctx = document.getElementById('crushingPowerChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Power vs Throughput',
+                data: [
+                    { x: 900, y: 730 },
+                    { x: 920, y: 745 },
+                    { x: 950, y: 760 },
+                    { x: 980, y: 770 },
+                    { x: 1000, y: 780 },
+                    { x: 1020, y: 795 },
+                    { x: 1050, y: 805 },
+                    { x: 1080, y: 820 }
+                ],
+                backgroundColor: '#2563eb'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Feed Rate (t/h)'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Power Consumption (kW)'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Crushing size distribution chart
+function createCrushingSizeChart() {
+    const ctx = document.getElementById('crushingSizeChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20'],
+            datasets: [{
+                label: 'Current Distribution',
+                data: [0, 5, 15, 30, 60, 80, 92, 97, 99, 100, 100],
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }, {
+                label: 'Target Distribution',
+                data: [0, 8, 20, 35, 65, 85, 95, 98, 100, 100, 100],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Cumulative % Passing'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Particle Size (mm)'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Pellet quality chart
+function createPelletQualityChart() {
+    const ctx = document.getElementById('pelletQualityChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Cold Crushing Strength', 'Tumble Index', 'Abrasion Index', 'Porosity', 'Reducibility'],
+            datasets: [{
+                label: 'Current',
+                data: [245, 93.5, 5.2, 24.5, 68],
+                backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                borderColor: '#2563eb',
+                borderWidth: 2,
+                pointBackgroundColor: '#2563eb'
+            }, {
+                label: 'Target',
+                data: [270, 94, 4.8, 24, 70],
+                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                borderColor: '#10b981',
+                borderWidth: 2,
+                pointBackgroundColor: '#10b981'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                                    variation = current_params.copy()
+                variation[param] = value
+                variations.append(variation)
+        
+        # Simplified return for demonstration purposes
+        # In a real implementation, this would evaluate predictions for each variation
+        recommendation = current_params.copy()
+        
+        # Make some reasonable recommendations based on target
+        if target['parameter'] == 'tumbler_index' and target['direction'] == 'increase':
+            recommendation['basicity'] = min(2.2, current_params['basicity'] + 0.1)
+            recommendation['coke_rate'] = min(8.5, current_params['coke_rate'] + 0.3)
+            recommendation['expected_improvement'] = 0.8  # Estimated improvement in tumbler index
+        elif target['parameter'] == 'reducibility_index' and target['direction'] == 'increase':
+            recommendation['basicity'] = min(2.2, current_params['basicity'] + 0.1)
+            recommendation['bed_height'] = max(520, current_params['bed_height'] - 10)
+            recommendation['expected_improvement'] = 1.2  # Estimated improvement in reducibility
+        elif target['parameter'] == 'productivity' and target['direction'] == 'increase':
+            recommendation['bed_height'] = min(580, current_params['bed_height'] + 15)
+            recommendation['return_fines_ratio'] = max(22, current_params['return_fines_ratio'] - 2)
+            recommendation['expected_improvement'] = 0.05  # Estimated improvement in productivity
+        
+        return recommendation
+    
+    def _optimize_crushing(self, current_params, target):
+        """Optimize crushing parameters"""
+        # Simplified optimization for crushing
+        recommendation = current_params.copy()
+        
+        if target['parameter'] == 'power_consumption' and target['direction'] == 'decrease':
+            recommendation['css_primary'] = min(200, current_params['css_primary'] + 5)
+            recommendation['css_secondary'] = min(60, current_params['css_secondary'] + 2)
+            recommendation['expected_reduction'] = 15  # Estimated power reduction in kW
+        elif target['parameter'] == 'product_p80' and target['direction'] == 'decrease':
+            recommendation['css_tertiary'] = max(10, current_params['css_tertiary'] - 1)
+            recommendation['screen_aperture'] = max(5, current_params['screen_aperture'] - 1)
+            recommendation['expected_improvement'] = 0.5  # Estimated reduction in P80
+        elif target['parameter'] == 'throughput' and target['direction'] == 'increase':
+            recommendation['css_primary'] = min(200, current_params['css_primary'] + 10)
+            recommendation['circulating_load'] = max(220, current_params['circulating_load'] - 20)
+            recommendation['expected_improvement'] = 30  # Estimated throughput increase in t/h
+        
+        return recommendation
+    
+    def _optimize_pelletization(self, current_params, target):
+        """Optimize pelletization parameters"""
+        # Simplified optimization for pelletization
+        recommendation = current_params.copy()
+        
+        if target['parameter'] == 'cold_crushing_strength' and target['direction'] == 'increase':
+            recommendation['bentonite_addition'] = min(1.0, current_params['bentonite_addition'] + 0.1)
+            recommendation['induration_temp'] = min(1350, current_params['induration_temp'] + 20)
+            recommendation['expected_improvement'] = 15  # Estimated CCS improvement in kg/pellet
+        elif target['parameter'] == 'tumble_index' and target['direction'] == 'increase':
+            recommendation['bentonite_addition'] = min(1.0, current_params['bentonite_addition'] + 0.05)
+            recommendation['induration_time'] = min(30, current_params['induration_time'] + 2)
+            recommendation['expected_improvement'] = 0.6  # Estimated tumble index improvement
+        elif target['parameter'] == 'abrasion_index' and target['direction'] == 'decrease':
+            recommendation['moisture_content'] = max(8.0, current_params['moisture_content'] - 0.2)
+            recommendation['induration_temp'] = min(1350, current_params['induration_temp'] + 15)
+            recommendation['expected_improvement'] = 0.3  # Estimated abrasion index reduction
+        
+        return recommendation
+    
+    def _optimize_dewatering(self, current_params, target):
+        """Optimize dewatering parameters"""
+        # Simplified optimization for dewatering
+        recommendation = current_params.copy()
+        
+        if target['parameter'] == 'filter_cake_moisture' and target['direction'] == 'decrease':
+            recommendation['filter_pressure'] = min(10, current_params['filter_pressure'] + 0.5)
+            recommendation['blow_time'] = min(1.5, current_params['blow_time'] + 0.2)
+            recommendation['expected_improvement'] = 0.8  # Estimated moisture reduction in percentage points
+        elif target['parameter'] == 'filtration_rate' and target['direction'] == 'increase':
+            recommendation['filter_cycle_time'] = max(8, current_params['filter_cycle_time'] - 0.5)
+            recommendation['filter_cake_thickness'] = max(25, current_params['filter_cake_thickness'] - 2)
+            recommendation['expected_improvement'] = 3.5  # Estimated filtration rate improvement
+        elif target['parameter'] == 'solids_recovery' and target['direction'] == 'increase':
+            recommendation['flocculant_dosage'] = min(25, current_params['flocculant_dosage'] + 1.5)
+            recommendation['thickener_underflow_pct'] = min(60, current_params['thickener_underflow_pct'] + 2)
+            recommendation['expected_improvement'] = 0.4  # Estimated recovery improvement in percentage points
+        
+        return recommendation
+
+#################################
+# DASHBOARD & VISUALIZATION
+#################################
+
+class DashboardGenerator:
+    """Generate dashboard HTML and visualizations"""
+    def __init__(self, config):
+        self.config = config
+        
+    def generate_dashboard(self):
+        """Generate the main dashboard HTML"""
+        logger.info("Generating dashboard")
+        
+        # Create the main HTML file
+        self._create_main_html()
+        
+        # Create the CSS file
+        self._create_css()
+        
+        # Create the JavaScript file
+        self._create_js()
+        
+        # Create data JSON file for dashboard
+        self._create_data_json()
+        
+        logger.info(f"Dashboard generated in {self.config.web_dir}")
+        
+        return os.path.join(self.config.web_dir, 'index.html')
+    
+    def _create_main_html(self):
+        """Create the main HTML file for the dashboard"""
+        html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSW Steel Plant - Integrated Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>JSW Steel</h1>
+                <p>Toranagallu Plant - Integrated Dashboard</p>
+            </div>
+            <div class="status">
+                <div class="status-indicator online">Models Active</div>
+                <div class="last-updated">Updated: <span id="update-time">Loading...</span></div>
+            </div>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-tab="overview">Overview</a></li>
+                <li><a href="#" data-tab="blast-furnace">Blast Furnace</a></li>
+                <li><a href="#" data-tab="sinter">Sinter Plant</a></li>
+                <li><a href="#" data-tab="mineral-processing">Mineral Processing</a></li>
+                <li><a href="#" data-tab="knowledge">Knowledge Base</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <!-- Overview Tab -->
+            <section id="overview" class="tab-content active">
+                <h2>Plant Overview</h2>
+                
+                <div class="kpi-container">
+                    <div class="kpi-card">
+                        <h3>Hot Metal Production</h3>
+                        <div class="kpi-value">7,850</div>
+                        <div class="kpi-unit">tons/day</div>
+                        <div class="kpi-target">Target: 8,000</div>
+                        <div class="kpi-bar">
+                            <div class="kpi-progress" style="width: 98%"></div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Energy Consumption</h3>
+                        <div class="kpi-value">22.3</div>
+                        <div class="kpi-unit">GJ/ton</div>
+                        <div class="kpi-target">Target: 21.0</div>
+                        <div class="kpi-bar">
+                            <div class="kpi-progress warning" style="width: 94%"></div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Quality Index</h3>
+                        <div class="kpi-value">94.5</div>
+                        <div class="kpi-unit">%</div>
+                        <div class="kpi-target">Target: 95.0</div>
+                        <div class="kpi-bar">
+                            <div class="kpi-progress" style="width: 99%"></div>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Yield</h3>
+                        <div class="kpi-value">97.2</div>
+                        <div class="kpi-unit">%</div>
+                        <div class="kpi-target">Target: 98.0</div>
+                        <div class="kpi-bar">
+                            <div class="kpi-progress" style="width: 99%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-card">
+                        <h3>Hot Metal Production Trend</h3>
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Quality Parameters</h3>
+                        <canvas id="qualityChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="alerts-container">
+                    <h3>Recent Alerts & Recommendations</h3>
+                    <div class="alert critical">
+                        <div class="alert-time">10:15</div>
+                        <div class="alert-content">
+                            <h4>High Silicon Content in Hot Metal</h4>
+                            <p>Current: 0.52% | Threshold: 0.45%</p>
+                            <p class="alert-recommendation">Recommendation: Decrease blast temperature by 15°C</p>
+                        </div>
+                    </div>
+                    <div class="alert warning">
+                        <div class="alert-time">09:30</div>
+                        <div class="alert-content">
+                            <h4>Low Pellet Cold Crushing Strength</h4>
+                            <p>Average: 245 kg/pellet | Target: >250 kg/pellet</p>
+                            <p class="alert-recommendation">Recommendation: Increase induration temperature to 1320°C</p>
+                        </div>
+                    </div>
+                    <div class="alert info">
+                        <div class="alert-time">08:45</div>
+                        <div class="alert-content">
+                            <h4>Maintenance Reminder</h4>
+                            <p>Schedule filter cloth cleaning for Filter Press #2 within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Blast Furnace Tab -->
+            <section id="blast-furnace" class="tab-content">
+                <h2>Blast Furnace Operations</h2>
+                
+                <div class="status-cards">
+                    <div class="status-card">
+                        <h3>Current Status</h3>
+                        <div class="param-list">
+                            <div class="param-item">
+                                <span class="param-name">Hot Metal Temp:</span>
+                                <span class="param-value">1495 °C</span>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">Silicon Content:</span>
+                                <span class="param-value critical">0.52 %</span>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">Fuel Rate:</span>
+                                <span class="param-value">445 kg/thm</span>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">Blast Temperature:</span>
+                                <span class="param-value">1180 °C</span>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">Oxygen Enrichment:</span>
+                                <span class="param-value">6.5 %</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-card">
+                        <h3>Hot Metal Temperature</h3>
+                        <canvas id="hotMetalTempChart"></canvas>
+                    </div>
+                    
+                    <div class="status-card">
+                        <h3>Silicon Content</h3>
+                        <canvas id="siliconChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="optimization-container">
+                    <h3>Parameter Optimization</h3>
+                    <p>Based on current conditions, the model recommends the following parameter adjustments:</p>
+                    
+                    <div class="recommendations">
+                        <div class="recommendation-card">
+                            <h4>Blast Temperature</h4>
+                            <div class="param-current">Current: 1180 °C</div>
+                            <div class="param-recommended">Recommended: 1165 °C</div>
+                            <div class="param-impact">Expected Si reduction: 0.08%</div>
+                        </div>
+                        
+                        <div class="recommendation-card">
+                            <h4>Moisture Content</h4>
+                            <div class="param-current">Current: 18 g/Nm³</div>
+                            <div class="param-recommended">Recommended: 20 g/Nm³</div>
+                            <div class="param-impact">Expected Si reduction: 0.05%</div>
+                        </div>
+                        
+                        <div class="recommendation-card">
+                            <h4>Coal Injection Rate</h4>
+                            <div class="param-current">Current: 175 kg/thm</div>
+                            <div class="param-recommended">Recommended: 175 kg/thm</div>
+                            <div class="param-impact">No change recommended</div>
+                        </div>
+                    </div>
+                    
+                    <div class="model-info">
+                        <p>Model Confidence: 85% - Based on similar operating conditions from historical data</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sinter Plant Tab -->
+            <section id="sinter" class="tab-content">
+                <h2>Sinter Plant Operations</h2>
+                
+                <div class="status-cards">
+                    <div class="status-card">
+                        <h3>Quality Metrics</h3>
+                        <div class="param-list">
+                            <div class="param-item">
+                                <span class="param-name">Tumbler Index:</span>
+                                <span class="param-value">74.2 %</span>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">Reducibility:</span>
+                                <span class="param-value">68.5 %</span>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">Productivity:</span>
+                                <span class="param-value">1.36 t/m²/h</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-card">
+                        <h3>Quality Prediction</h3>
+                        <canvas id="sinterQualityChart"></canvas>
+                    </div>
+                    
+                    <div class="status-card">
+                        <h3>Feature Importance</h3>
+                        <canvas id="sinterFeatureChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="optimization-container">
+                    <h3>Parameter Optimization</h3>
+                    
+                    <div class="recommendations">
+                        <div class="recommendation-card">
+                            <h4>Basicity (CaO/SiO2)</h4>
+                            <div class="param-current">Current: 1.9</div>
+                            <div class="param-recommended">Recommended: 2.0</div>
+                            <div class="param-impact">Expected TI improvement: +0.6</div>
+                        </div>
+                        
+                        <div class="recommendation-card">
+                            <h4>Coke Rate</h4>
+                            <div class="param-current">Current: 7.2%</div>
+                            <div class="param-recommended">Recommended: 7.5%</div>
+                            <div class="param-impact">Expected TI improvement: +0.8</div>
+                        </div>
+                        
+                        <div class="recommendation-card">
+                            <h4>Bed Height</h4>
+                            <div class="param-current">Current: 550 mm</div>
+                            <div class="param-recommended">Recommended: 565 mm</div>
+                            <div class="param-impact">Expected productivity: +0.04 t/m²/h</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Mineral Processing Tab -->
+            <section id="mineral-processing" class="tab-content">
+                <h2>Mineral Processing Operations</h2>
+                
+                <div class="sub-tabs">
+                    <button class="sub-tab active" data-subtab="crushing">Crushing</button>
+                    <button class="sub-tab" data-subtab="pelletization">Pelletization</button>
+                    <button class="sub-tab" data-subtab="dewatering">Dewatering</button>
+                </div>
+                
+                <!-- Crushing Sub-Tab -->
+                <div id="crushing" class="sub-tab-content active">
+                    <div class="status-cards">
+                        <div class="status-card">
+                            <h3>Current Status</h3>
+                            <div class="param-list">
+                                <div class="param-item">
+                                    <span class="param-name">Feed Rate:</span>
+                                    <span class="param-value">1000 t/h</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-name">Power Consumption:</span>
+                                    <span class="param-value">780 kW</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-name">Product P80:</span>
+                                    <span class="param-value">10.2 mm</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-card">
+                            <h3>Power vs Throughput</h3>
+                            <canvas id="crushingPowerChart"></canvas>
+                        </div>
+                        
+                        <div class="status-card">
+                            <h3>Product Size Distribution</h3>
+                            <canvas id="crushingSizeChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="optimization-container">
+                        <h3>Parameter Optimization</h3>
+                        
+                        <div class="recommendations">
+                            <div class="recommendation-card">
+                                <h4>Primary CSS</h4>
+                                <div class="param-current">Current: 175 mm</div>
+                                <div class="param-recommended">Recommended: 180 mm</div>
+                                <div class="param-impact">Expected power reduction: 15 kW</div>
+                            </div>
+                            
+                            <div class="recommendation-card">
+                                <h4>Secondary CSS</h4>
+                                <div class="param-current">Current: 50 mm</div>
+                                <div class="param-recommended">Recommended: 48 mm</div>
+                                <div class="param-impact">Expected P80 reduction: 0.3 mm</div>
+                            </div>
+                            
+                            <div class="recommendation-card">
+                                <h4>Screen Aperture</h4>
+                                <div class="param-current">Current: 10 mm</div>
+                                <div class="param-recommended">Recommended: 9 mm</div>
+                                <div class="param-impact">Expected P80 reduction: 0.2 mm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pelletization Sub-Tab -->
+                <div id="pelletization" class="sub-tab-content">
+                    <div class="status-cards">
+                        <div class="status-card">
+                            <h3>Quality Metrics</h3>
+                            <div class="param-list">
+                                <div class="param-item">
+                                    <span class="param-name">Cold Crushing Strength:</span>
+                                    <span class="param-value warning">245 kg/pellet</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-name">Tumble Index:</span>
+                                    <span class="param-value">93.5 %</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-name">Abrasion Index:</span>
+                                    <span class="param-value">5.2 %</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-card">
+                            <h3>Quality Metrics</h3>
+                            <canvas id="pelletQualityChart"></canvas>
+                        </div>
+                        
+                        <div class="status-card">
+                            <h3>Feature Importance</h3>
+                            <canvas id="pelletFeatureChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="optimization-container">
+                        <h3>Parameter Optimization</h3>
+                        
+                        <div class="recommendations">
+                            <div class="recommendation-card">
+                                <h4>Bentonite Addition</h4>
+                                <div class="param-current">Current: 0.7 %</div>
+                                <div class="param-recommended">Recommended: 0.8 %</div>
+                                <div class="param-impact">Expected CCS improvement: +8 kg/pellet</div>
+                            </div>
+                            
+                            <div class="recommendation-card">
+                                <h4>Induration Temperature</h4>
+                                <div class="param-current">Current: 1300 °C</div>
+                                <div class="param-recommended">Recommended: 1320 °C</div>
+                                <div class="param-impact">Expected CCS improvement: +15 kg/pellet</div>
+                            </div>
+                            
+                            <div class="recommendation-card">
+                                <h4>Induration Time</h4>
+                                <div class="param-current">Current: 25 min</div>
+                                <div class="param-recommended">Recommended: 27 min</div>
+                                <div class="param-impact">Expected CCS improvement: +5 kg/pellet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dewatering Sub-Tab -->
+                <div id="dewatering" class="sub-tab-content">
+                    <div class="status-cards">
+                        <div class="status-card">
+                            <h3>Current Status</h3>
+                            <div class="param-list">
+                                <div class="param-item">
+                                    <span class="param-name">Filter Cake Moisture:</span>
+                                    <span class="param-value">9.8 %</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-name">Filtration Rate:</span>
+                                    <span class="param-value">82 kg/m²/h</span>
+                                </div>
+                                <div class="param-item">
+                                    <span class="param-name">Solids Recovery:</span>
+                                    <span class="param-value">98.7 %</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-card">
+                            <h3>Moisture Trend</h3>
+                            <canvas id="moistureChart"></canvas>
+                        </div>
+                        
+                        <div class="status-card">
+                            <h3>Filtration Performance</h3>
+                            <canvas id="filtrationChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="optimization-container">
+                        <h3>Parameter Optimization</h3>
+                        
+                        <div class="recommendations">
+                            <div class="recommendation-card">
+                                <h4>Flocculant Dosage</h4>
+                                <div class="param-current">Current: 20 g/ton</div>
+                                <div class="param-recommended">Recommended: 22 g/ton</div>
+                                <div class="param-impact">Expected turbidity reduction: 2 NTU</div>
+                            </div>
+                            
+                            <div class="recommendation-card">
+                                <h4>Filter Pressure</h4>
+                                <div class="param-current">Current: 8.0 bar</div>
+                                <div class="param-recommended">Recommended: 8.5 bar</div>
+                                <div class="param-impact">Expected moisture reduction: 0.3 %</div>
+                            </div>
+                            
+                            <div class="recommendation-card">
+                                <h4>Blow Time</h4>
+                                <div class="param-current">Current: 1.0 min</div>
+                                <div class="param-recommended">Recommended: 1.2 min</div>
+                                <div class="param-impact">Expected moisture reduction: 0.5 %</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Knowledge Base Tab -->
+            <section id="knowledge" class="tab-content">
+                <h2>Knowledge Base</h2>
+                
+                <div class="search-container">
+                    <form id="knowledge-search">
+                        <input type="text" id="search-query" placeholder="Search for process information...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+                
+                <div class="search-results">
+                    <h3>Search Results</h3>
+                    <div id="results-container">
+                        <div class="result-item">
+                            <h4>Blast Furnace Temperature Control</h4>
+                            <p>The optimal blast temperature range for the blast furnace is 1080-1220°C. Operating below 1080°C can lead to reduced hot metal temperature and increased fuel consumption.</p>
+                            <div class="result-relevance">Relevance: 92%</div>
+                        </div>
+                        
+                        <div class="result-item">
+                            <h4>Silicon Control in Hot Metal</h4>
+                            <p>When the silicon content in hot metal exceeds 0.45%, it indicates excessive temperature in the lower part of the furnace or reduced slag basicity.</p>
+                            <div class="result-relevance">Relevance: 85%</div>
+                        </div>
+                        
+                        <div class="result-item">
+                            <h4>Moisture Effect on Blast Furnace</h4>
+                            <p>The moisture in the blast should be controlled between 15-25 g/Nm³ to maintain stable operation. High moisture increases fuel rate and reduces flame temperature.</p>
+                            <div class="result-relevance">Relevance: 78%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-queries">
+                    <h3>Recent Queries</h3>
+                    <div class="query-list">
+                        <div class="query-item">blast furnace temperature</div>
+                        <div class="query-item">sinter basicity optimization</div>
+                        <div class="query-item">pellet quality improvement</div>
+                        <div class="query-item">crusher power consumption</div>
+                        <div class="query-item">filter cake moisture reduction</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>JSW Steel Toranagallu Plant AI Model - MVP Demo</p>
+            <p>Generated by Claude AI - April 2025</p>
+        </footer>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>
+"""
+        
+        # Write HTML file
+        with open(os.path.join(self.config.web_dir, 'index.html'), 'w') as f:
+            f.write(html_content)
+    
+    def _create_css(self):
+        """Create the CSS file for the dashboard"""
+        css_content = """/* JSW Steel Dashboard Styles */
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e1e5eb;        # Save feature importance
+        prefix = self.data['feature_names'][0].split('_')[0]
+        importance_file = os.path.join(self.config.results_dir, f'{prefix}_feature_importance.csv')
+        feature_importance.to_csv(importance_file)
+        
+        return results, feature_importance
+
+#################################
+# KNOWLEDGE BASE SYSTEM
+#################################
+
+class KnowledgeSystem:
+    """Knowledge retrieval system for technical documents"""
+    def __init__(self, config):
+        self.config = config
+        self.vectorizer = None
+        self.vectors = None
+        self.documents = None
+        self.document_ids = None
+        
+    def initialize(self):
+        """Initialize the knowledge system"""
+        try:
+            # Initialize vectorizer
+            self.vectorizer = TfidfVectorizer()
+            logger.info("Knowledge system initialized")
+            return True
+        except Exception as e:
+            logger.error(f"Error initializing knowledge system: {e}")
+            return False
+    
+    def load_documents(self):
+        """Load technical documents"""
+        try:
+            # Load document info
+            doc_info_path = os.path.join(self.config.data_dir, 'document_info.csv')
+            doc_info = pd.read_csv(doc_info_path)
+            
+            # Extract documents and IDs
+            self.documents = doc_info['content'].tolist()
+            self.document_ids = doc_info['id'].tolist()
+            
+            # Index documents
+            self._index_documents()
+            
+            logger.info(f"Loaded {len(self.documents)} technical documents")
+            return True
+        except Exception as e:
+            logger.error(f"Error loading documents: {e}")
+            return False
+    
+    def _index_documents(self):
+        """Index documents using TF-IDF vectorization"""
+        if not self.documents:
+            return False
+        
+        try:
+            # Create TF-IDF vectors
+            self.vectors = self.vectorizer.fit_transform(self.documents).toarray()
+            logger.info(f"Indexed {len(self.documents)} documents")
+            return True
+        except Exception as e:
+            logger.error(f"Error indexing documents: {e}")
+            return False
+    
+    def query(self, query_text, k=3):
+        """Query the knowledge base"""
+        if not self.vectors or not self.documents:
+            logger.error("Knowledge base not initialized")
+            return []
+        
+        try:
+            # Convert query to vector
+            query_vector = self.vectorizer.transform([query_text]).toarray()[0]
+            
+            # Calculate similarities (cosine similarity)
+            similarities = cosine_similarity([query_vector], self.vectors)[0]
+            
+            # Get top k results
+            top_indices = similarities.argsort()[-k:][::-1]
+            
+            results = []
+            for idx in top_indices:
+                doc_id = self.document_ids[idx]
+                results.append({
+                    'document_id': doc_id,
+                    'document': self.documents[idx],
+                    'score': float(similarities[idx])
+                })
+                
+            return results
+        except Exception as e:
+            logger.error(f"Error querying knowledge base: {e}")
+            return []
+    
+    def save(self):
+        """Save the knowledge base"""
+        try:
+            # Prepare data to save
+            data = {
+                'documents': self.documents,
+                'document_ids': self.document_ids,
+                'vectors': self.vectors
+            }
+            
+            # Save to file
+            output_path = os.path.join(self.config.model_dir, 'knowledge_base.pkl')
+            joblib.dump(data, output_path)
+            
+            # Save vectorizer separately
+            vectorizer_path = os.path.join(self.config.model_dir, 'vectorizer.pkl')
+            joblib.dump(self.vectorizer, vectorizer_path)
+            
+            logger.info(f"Knowledge base saved to {output_path}")
+            return True
+        except Exception as e:
+            logger.error(f"Error saving knowledge base: {e}")
+            return False
+    
+    def load(self):
+        """Load the knowledge base"""
+        try:
+            # Load data
+            input_path = os.path.join(self.config.model_dir, 'knowledge_base.pkl')
+            data = joblib.load(input_path)
+            
+            # Load vectorizer
+            vectorizer_path = os.path.join(self.config.model_dir, 'vectorizer.pkl')
+            self.vectorizer = joblib.load(vectorizer_path)
+            
+            # Extract data
+            self.documents = data['documents']
+            self.document_ids = data['document_ids']
+            self.vectors = data['vectors']
+            
+            logger.info(f"Knowledge base loaded from {input_path}")
+            return True
+        except Exception as e:
+            logger.error(f"Error loading knowledge base: {e}")
+            return False
+
+#################################
+# MODEL TRAINING
+#################################
+
+class ModelTrainer:
+    """Train models for all plant operations"""
+    def __init__(self, config):
+        self.config = config
+        self.data_processor = DataProcessor(config)
+        self.models = {}
+        self.results = {}
+        
+        # Map of process areas to models and results
+        self.process_areas = [
+            'blast_furnace',
+            'sinter',
+            'crushing',
+            'pelletization',
+            'dewatering'
+        ]
+    
+    def train_all_models(self):
+        """Train all models"""
+        logger.info("Starting training for all models")
+        
+        # Train models for each process area
+        self.train_blast_furnace_model()
+        self.train_sinter_quality_model()
+        self.train_crushing_model()
+        self.train_pelletization_model()
+        self.train_dewatering_model()
+        
+        # Build knowledge base
+        self.build_knowledge_base()
+        
+        logger.info("All models trained successfully")
+        
+        return self.models, self.results
+    
+    def train_blast_furnace_model(self):
+        """Train LSTM model for blast furnace prediction"""
+        logger.info("Training blast furnace model...")
+        
+        # Load data
+        data_path = os.path.join(self.config.blast_furnace_dir, 'blast_furnace_data.csv')
+        df = self.data_processor.load_csv(data_path)
+        
+        if df is None:
+            logger.error("Failed to load blast furnace data")
+            return None
+        
+        # Define feature and target columns
+        feature_cols = [
+            'blast_temperature', 'oxygen_enrichment', 'coal_injection_rate',
+            'top_pressure', 'moisture', 'ore_fe_content', 'sinter_ratio',
+            'pellet_ratio', 'coke_reactivity'
+        ]
+        
+        target_cols = ['hot_metal_temperature', 'hot_metal_si', 'fuel_rate']
+        
+        # Preprocess data
+        X_scaled, y_scaled, feature_cols = self.data_processor.preprocess_time_series(
+            df, feature_cols, target_cols, timestamp_col='timestamp'
+        )
+        
+        # Create datasets
+        dataloaders = self.data_processor.create_time_series_datasets(
+            X_scaled, y_scaled, seq_length=self.config.sequence_length
+        )
+        
+        # Initialize model
+        input_dim = len(feature_cols)
+        output_dim = len(target_cols)
+        
+        model = LSTMModel(
+            input_dim=input_dim,
+            hidden_dim=128,
+            output_dim=output_dim,
+            num_layers=2,
+            dropout=0.2
+        )
+        
+        # Train model
+        trainer = TimeSeriesModelTrainer(model, dataloaders, self.config)
+        trainer.train()
+        
+        # Test model
+        test_results = trainer.test()
+        
+        # Store model and results
+        self.models['blast_furnace'] = model
+        self.results['blast_furnace'] = test_results
+        
+        # Save results
+        self._save_results('blast_furnace', test_results)
+        
+        # Visualize results
+        self._visualize_time_series_results('blast_furnace', test_results, target_cols)
+        
+        return model, test_results
+    
+    def train_sinter_quality_model(self):
+        """Train Random Forest model for sinter quality prediction"""
+        logger.info("Training sinter quality model...")
+        
+        # Load data
+        data_path = os.path.join(self.config.sinter_dir, 'sinter_quality_data.csv')
+        df = self.data_processor.load_csv(data_path)
+        
+        if df is None:
+            logger.error("Failed to load sinter data")
+            return None
+        
+        # Define feature and target columns
+        feature_cols = [
+            'basicity', 'sio2_content', 'al2o3_content', 'mgo_content',
+            'bed_height', 'ignition_temperature', 'burn_through_temperature',
+            'coke_rate', 'moisture_content', 'return_fines_ratio'
+        ]
+        
+        target_cols = ['tumbler_index', 'reducibility_index', 'productivity']
+        
+        # Prepare tabular data
+        data = self.data_processor.prepare_tabular_data(df, feature_cols, target_cols)
+        
+        # Train Random Forest model
+        trainer = RandomForestTrainer(data, self.config, n_estimators=100, max_depth=10)
+        model = trainer.train()
+        
+        # Test model
+        test_results, feature_importance = trainer.test()
+        
+        # Store model and results
+        self.models['sinter'] = model
+        self.results['sinter'] = test_results
+        
+        # Save results
+        self._save_results('sinter', test_results)
+        
+        # Visualize results
+        self._visualize_tabular_results('sinter', test_results, feature_importance, target_cols)
+        
+        return model, test_results
+    
+    def train_crushing_model(self):
+        """Train LSTM model for crushing operations"""
+        logger.info("Training crushing model...")
+        
+        # Load data
+        data_path = os.path.join(self.config.mineral_processing_dir, 'crushing_data.csv')
+        df = self.data_processor.load_csv(data_path)
+        
+        if df is None:
+            logger.error("Failed to load crushing data")
+            return None
+        
+        # Define feature and target columns
+        feature_cols = [
+            'ore_feed_rate', 'ore_moisture', 'ore_hardness',
+            'css_primary', 'css_secondary', 'css_tertiary',
+            'screen_aperture', 'circulating_load'
+        ]
+        
+        target_cols = [
+            'power_consumption_primary', 'power_consumption_secondary', 
+            'power_consumption_tertiary', 'product_p80', 'total_throughput'
+        ]
+        
+        # Preprocess data
+        X_scaled, y_scaled, feature_cols = self.data_processor.preprocess_time_series(
+            df, feature_cols, target_cols, timestamp_col='timestamp'
+        )
+        
+        # Create datasets
+        dataloaders = self.data_processor.create_time_series_datasets(
+            X_scaled, y_scaled, seq_length=self.config.sequence_length
+        )
+        
+        # Initialize model
+        input_dim = len(feature_cols)
+        output_dim = len(target_cols)
+        
+        model = LSTMModel(
+            input_dim=input_dim,
+            hidden_dim=128,
+            output_dim=output_dim,
+            num_layers=2,
+            dropout=0.2
+        )
+        
+        # Train model
+        trainer = TimeSeriesModelTrainer(model, dataloaders, self.config)
+        trainer.train()
+        
+        # Test model
+        test_results = trainer.test()
+        
+        # Store model and results
+        self.models['crushing'] = model
+        self.results['crushing'] = test_results
+        
+        # Save results
+        self._save_results('crushing', test_results)
+        
+        # Visualize results
+        self._visualize_time_series_results('crushing', test_results, target_cols)
+        
+        return model, test_results
+    
+    def train_pelletization_model(self):
+        """Train Random Forest model for pelletization operations"""
+        logger.info("Training pelletization model...")
+        
+        # Load data
+        data_path = os.path.join(self.config.mineral_processing_dir, 'pelletization_data.csv')
+        df = self.data_processor.load_csv(data_path)
+        
+        if df is None:
+            logger.error("Failed to load pelletization data")
+            return None
+        
+        # Define feature and target columns
+        feature_cols = [
+            'concentrate_fe', 'concentrate_silica', 'concentrate_alumina',
+            'bentonite_addition', 'moisture_content', 'disc_speed',
+            'disc_angle', 'retention_time', 'induration_temp', 'induration_time'
+        ]
+        
+        target_cols = [
+            'green_pellet_strength', 'cold_crushing_strength', 
+            'pellet_porosity', 'tumble_index', 'abrasion_index'
+        ]
+        
+        # Prepare tabular data
+        data = self.data_processor.prepare_tabular_data(df, feature_cols, target_cols)
+        
+        # Train Random Forest model
+        trainer = RandomForestTrainer(data, self.config, n_estimators=100, max_depth=10)
+        model = trainer.train()
+        
+        # Test model
+        test_results, feature_importance = trainer.test()
+        
+        # Store model and results
+        self.models['pelletization'] = model
+        self.results['pelletization'] = test_results
+        
+        # Save results
+        self._save_results('pelletization', test_results)
+        
+        # Visualize results
+        self._visualize_tabular_results('pelletization', test_results, feature_importance, target_cols)
+        
+        return model, test_results
+    
+    def train_dewatering_model(self):
+        """Train LSTM model for dewatering operations"""
+        logger.info("Training dewatering model...")
+        
+        # Load data
+        data_path = os.path.join(self.config.mineral_processing_dir, 'dewatering_data.csv')
+        df = self.data_processor.load_csv(data_path)
+        
+        if df is None:
+            logger.error("Failed to load dewatering data")
+            return None
+        
+        # Define feature and target columns
+        feature_cols = [
+            'slurry_feed_rate', 'slurry_solids_pct', 'flocculant_dosage',
+            'thickener_underflow_pct', 'filter_cycle_time', 'filter_pressure',
+            'filter_cake_thickness', 'blow_time'
+        ]
+        
+        target_cols = [
+            'thickener_overflow_turbidity', 'filter_cake_moisture', 
+            'filtration_rate', 'solids_recovery'
+        ]
+        
+        # Preprocess data
+        X_scaled, y_scaled, feature_cols = self.data_processor.preprocess_time_series(
+            df, feature_cols, target_cols, timestamp_col='timestamp'
+        )
+        
+        # Create datasets
+        dataloaders = self.data_processor.create_time_series_datasets(
+            X_scaled, y_scaled, seq_length=self.config.sequence_length
+        )
+        
+        # Initialize model
+        input_dim = len(feature_cols)
+        output_dim = len(target_cols)
+        
+        model = LSTMModel(
+            input_dim=input_dim,
+            hidden_dim=128,
+            output_dim=output_dim,
+            num_layers=2,
+            dropout=0.2
+        )
+        
+        # Train model
+        trainer = TimeSeriesModelTrainer(model, dataloaders, self.config)
+        trainer.train()
+        
+        # Test model
+        test_results = trainer.test()
+        
+        # Store model and results
+        self.models['dewatering'] = model
+        self.results['dewatering'] = test_results
+        
+        # Save results
+        self._save_results('dewatering', test_results)
+        
+        # Visualize results
+        self._visualize_time_series_results('dewatering', test_results, target_cols)
+        
+        return model, test_results
+    
+    def build_knowledge_base(self):
+        """Build knowledge base system"""
+        logger.info("Building knowledge base...")
+        
+        # Initialize knowledge system
+        knowledge_system = KnowledgeSystem(self.config)
+        knowledge_system.initialize()
+        
+        # Load and index documents
+        knowledge_system.load_documents()
+        
+        # Save knowledge base
+        knowledge_system.save()
+        
+        # Test the knowledge base
+        query = "optimal blast furnace temperature"
+        results = knowledge_system.query(query, k=3)
+        
+        logger.info(f"Query: '{query}'")
+        for i, result in enumerate(results):
+            logger.info(f"Result {i+1}: {result['document']} (Score: {result['score']:.4f})")
+        
+        # Store knowledge system
+        self.models['knowledge'] = knowledge_system
+        
+        return knowledge_system
+    
+    def _save_results(self, process_area, results):
+        """Save model results to file"""
+        results_file = os.path.join(self.config.results_dir, f'{process_area}_results.json')
+        
+        # Convert numpy arrays to lists for JSON serialization
+        serializable_results = {
+            'mse': float(results['mse']),
+            'mae': float(results['mae']),
+            'r2': float(results['r2'])
+        }
+        
+        with open(results_file, 'w') as f:
+            json.dump(serializable_results, f, indent=4)
+            
+        logger.info(f"{process_area} results saved to {results_file}")
+    
+    def _visualize_time_series_results(self, process_area, results, target_cols):
+        """Create visualizations for time series model results"""
+        # Predictions vs Actuals
+        plt.figure(figsize=(15, 10))
+        
+        for i, col in enumerate(target_cols):
+            plt.subplot(len(target_cols), 1, i+1)
+            
+            # Get a sample of predictions and actuals (first 100 points)
+            sample_size = min(100, len(results['predictions']))
+            pred = results['predictions'][:sample_size, i]
+            actual = results['actuals'][:sample_size, i]
+            
+            plt.plot(actual, label='Actual')
+            plt.plot(pred, label='Predicted')
+            plt.title(f'{process_area} - {col}')
+            plt.legend()
+            plt.grid(True)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.config.results_dir, f'{process_area}_predictions.png'))
+        plt.close()
+    
+    def _visualize_tabular_results(self, process_area, results, feature_importance, target_cols):
+        """Create visualizations for tabular model results"""
+        # Feature importance
+        plt.figure(figsize=(10, 8))
+        feature_importance.sort_values('importance').plot(kind='barh')
+        plt.title(f'{process_area} - Feature Importance')
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.config.results_dir, f'{process_area}_feature_importance.png'))
+        plt.close()
+        
+        # Predictions vs Actuals
+        plt.figure(figsize=(15, 10))
+        
+        for i, col in enumerate(target_cols):
+            plt.subplot(len(target_cols), 1, i+1)
+            
+            # Scatter plot of predicted vs actual
+            plt.scatter(
+                results['actuals'][:, i], 
+                results['predictions'][:, i],
+                alpha=0.5
+            )
+            
+            # Add identity line
+            min_val = min(np.min(results['actuals'][:, i]), np.min(results['predictions'][:, i]))
+            max_val = max(np.max(results['actuals'][:, i]), np.max(results['predictions'][:, i]))
+            plt.plot([min_val, max_val], [min_val, max_val], 'r--')
+            
+            plt.title(f'{process_area} - {col}')
+            plt.xlabel('Actual')
+            plt.ylabel('Predicted')
+            plt.grid(True)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.config.results_dir, f'{process_area}_scatter.png'))
+        plt.close()
+
+#################################
+# PREDICTION AND OPTIMIZATION
+#################################
+
+class ModelPredictor:
+    """Make predictions and provide optimization recommendations"""
+    def __init__(self, config, models):
+        self.config = config
+        self.models = models
+        self.scalers = {}
+        
+        # Load scalers
+        self._load_scalers()
+    
+    def _load_scalers(self):
+        """Load all scalers from disk"""
+        # Try to load scalers for each process area
+        process_areas = [
+            'blast_furnace',
+            'sinter',
+            'crushing',
+            'pelletization',
+            'dewatering'
+        ]
+        
+        for area in process_areas:
+            try:
+                # Feature scaler
+                x_scaler_path = os.path.join(self.config.model_dir, f'{area}_x_scaler.pkl')
+                if os.path.exists(x_scaler_path):
+                    self.scalers[f'{area}_x'] = joblib.load(x_scaler_path)
+                
+                # Target scaler (for time series models)
+                y_scaler_path = os.path.join(self.config.model_dir, f'{area}_y_scaler.pkl')
+                if os.path.exists(y_scaler_path):
+                    self.scalers[f'{area}_y'] = joblib.load(y_scaler_path)
+                
+                logger.info(f"Loaded scalers for {area}")
+            except Exception as e:
+                logger.error(f"Error loading scalers for {area}: {e}")
+    
+    def predict(self, process_area, input_data):
+        """Make prediction for a specific process area"""
+        # Check if model exists
+        if process_area not in self.models:
+            logger.error(f"No model found for {process_area}")
+            return None
+        
+        # Get model
+        model = self.models[process_area]
+        
+        # Process input data
+        if isinstance(model, LSTMModel):
+            # For LSTM models (time series)
+            return self._predict_lstm(process_area, input_data)
+        elif isinstance(model, RandomForestRegressor):
+            # For Random Forest models (tabular)
+            return self._predict_rf(process_area, input_data)
+        else:
+            logger.error(f"Unknown model type for {process_area}")
+            return None
+    
+    def _predict_lstm(self, process_area, input_data):
+        """Make prediction with LSTM model"""
+        try:
+            # Scale input data if scaler exists
+            if f'{process_area}_x' in self.scalers:
+                input_data = self.scalers[f'{process_area}_x'].transform(input_data)
+            
+            # Convert to tensor
+            input_tensor = torch.FloatTensor(input_data).unsqueeze(0)
+            
+            # Make prediction
+            model = self.models[process_area]
+            model.eval()
+            
+            with torch.no_grad():
+                prediction = model(input_tensor)
+                
+            # Inverse transform prediction if scaler exists
+            if f'{process_area}_y' in self.scalers:
+                prediction = self.scalers[f'{process_area}_y'].inverse_transform(prediction.cpu().numpy())
+            else:
+                prediction = prediction.cpu().numpy()
+            
+            return prediction
+        except Exception as e:
+            logger.error(f"Error making LSTM prediction for {process_area}: {e}")
+            return None
+    
+    def _predict_rf(self, process_area, input_data):
+        """Make prediction with Random Forest model"""
+        try:
+            # Scale input data if scaler exists
+            if f'{process_area}_x' in self.scalers:
+                input_data = self.scalers[f'{process_area}_x'].transform(input_data)
+            
+            # Make prediction
+            model = self.models[process_area]
+            prediction = model.predict(input_data)
+            
+            return prediction
+        except Exception as e:
+            logger.error(f"Error making RF prediction for {process_area}: {e}")
+            return None
+    
+    def query_knowledge_base(self, query_text, k=3):
+        """Query the knowledge base"""
+        if 'knowledge' not in self.models:
+            logger.error("Knowledge base not found")
+            return []
+        
+        knowledge_system = self.models['knowledge']
+        return knowledge_system.query(query_text, k=k)
+    
+    def optimize_parameters(self, process_area, current_params, target):
+        """Provide parameter optimization recommendations"""
+        # This is a simplified optimization approach
+        # In a real implementation, this would use more sophisticated optimization techniques
+        
+        logger.info(f"Optimizing parameters for {process_area}")
+        
+        if process_area == 'blast_furnace':
+            return self._optimize_blast_furnace(current_params, target)
+        elif process_area == 'sinter':
+            return self._optimize_sinter(current_params, target)
+        elif process_area == 'crushing':
+            return self._optimize_crushing(current_params, target)
+        elif process_area == 'pelletization':
+            return self._optimize_pelletization(current_params, target)
+        elif process_area == 'dewatering':
+            return self._optimize_dewatering(current_params, target)
+        else:
+            logger.error(f"Optimization not implemented for {process_area}")
+            return None
+    
+    def _optimize_blast_furnace(self, current_params, target):
+        """Optimize blast furnace parameters"""
+        # Simplified optimization approach:
+        # 1. Create variations of current parameters
+        # 2. Predict outcomes for each variation
+        # 3. Select the best variation based on the target
+        
+        # Parameters to optimize
+        param_ranges = {
+            'blast_temperature': (current_params['blast_temperature'] - 30, current_params['blast_temperature'] + 30),
+            'oxygen_enrichment': (max(3, current_params['oxygen_enrichment'] - 1), min(8, current_params['oxygen_enrichment'] + 1)),
+            'moisture': (max(15, current_params['moisture'] - 2), min(25, current_params['moisture'] + 2))
+        }
+        
+        # Generate parameter combinations
+        variations = []
+        for param, (min_val, max_val) in param_ranges.items():
+            # Test 3 values: min, middle, max
+            test_values = [min_val, (min_val + max_val) / 2, max_val]
+            
+            for value in test_values:
+                # Create a variation with just this parameter changed
+                variation = current_params.copy()
+                variation[param] = value
+                variations.append(variation)
+        
+        # Predict outcomes for each variation
+        best_variation = None
+        best_improvement = 0
+        
+        for variation in variations:
+            # Convert variation to input format for model
+            input_data = np.array([[
+                variation['blast_temperature'],
+                variation['oxygen_enrichment'],
+                variation['coal_injection_rate'],
+                variation['top_pressure'],
+                variation['moisture'],
+                variation['ore_fe_content'],
+                variation['sinter_ratio'],
+                variation['pellet_ratio'],
+                variation['coke_reactivity']
+            ]])
+            
+            # Make prediction
+            prediction = self.predict('blast_furnace', input_data)
+            
+            if prediction is None:
+                continue
+            
+            # Calculate improvement based on target
+            if target['parameter'] == 'hot_metal_temperature':
+                current_value = current_params.get('hot_metal_temperature', prediction[0][0])
+                predicted_value = prediction[0][0]
+                
+                if target['direction'] == 'increase':
+                    improvement = predicted_value - current_value
+                else:
+                    improvement = current_value - predicted_value
+                
+                # Consider this variation if it's better than the current best
+                if improvement > best_improvement:
+                    best_improvement = improvement
+                    best_variation = variation
+                    best_variation['predicted_hot_metal_temperature'] = predicted_value
+            
+            elif target['parameter'] == 'hot_metal_si':
+                current_value = current_params.get('hot_metal_si', prediction[0][1])
+                predicted_value = prediction[0][1]
+                
+                if target['direction'] == 'increase':
+                    improvement = predicted_value - current_value
+                else:
+                    improvement = current_value - predicted_value
+                
+                # Consider this variation if it's better than the current best
+                if improvement > best_improvement:
+                    best_improvement = improvement
+                    best_variation = variation
+                    best_variation['predicted_hot_metal_si'] = predicted_value
+            
+            elif target['parameter'] == 'fuel_rate':
+                current_value = current_params.get('fuel_rate', prediction[0][2])
+                predicted_value = prediction[0][2]
+                
+                if target['direction'] == 'increase':
+                    improvement = predicted_value - current_value
+                else:
+                    improvement = current_value - predicted_value
+                
+                # Consider this variation if it's better than the current best
+                if improvement > best_improvement:
+                    best_improvement = improvement
+                    best_variation = variation
+                    best_variation['predicted_fuel_rate'] = predicted_value
+        
+        # Return the best variation as the recommendation
+        if best_variation:
+            best_variation['improvement'] = best_improvement
+            return best_variation
+        else:
+            # If no improvement found, return current parameters
+            return current_params
+    
+    def _optimize_sinter(self, current_params, target):
+        """Optimize sinter parameters"""
+        # Similar approach to blast furnace optimization
+        # This is a placeholder for a more sophisticated implementation
+        
+        # Parameters to optimize
+        param_ranges = {
+            'basicity': (max(1.7, current_params['basicity'] - 0.2), min(2.3, current_params['basicity'] + 0.2)),
+            'coke_rate': (max(6.5, current_params['coke_rate'] - 0.5), min(8.5, current_params['coke_rate'] + 0.5)),
+            'bed_height': (max(500, current_params['bed_height'] - 20), min(600, current_params['bed_height'] + 20))
+        }
+        
+        # Generate parameter combinations
+        variations = []
+        for param, (min_val, max_val) in param_ranges.items():
+            # Test 3 values: min, middle, max
+            test_values = [min_val, (min_val + max_val) / 2, max_val]
+            
+            for value in test_values:
+                # Create a variation with just this parameter changed
+                variation = current_params.copy()
+                variation[param]            # Generate base signal
+            signal = np.zeros(num_samples)
+            
+            # Add daily variation
+            daily = amplitude * 0.2 * np.sin(2 * np.pi * np.arange(num_samples) / 24)
+            signal += daily
+            
+            # Add random walk component (autocorrelated noise)
+            random_walk = np.zeros(num_samples)
+            for i in range(1, num_samples):
+                random_walk[i] = random_walk[i-1] + np.random.normal(0, 0.02 * amplitude)
+            signal += random_walk
+            
+            # Add random noise
+            noise = np.random.normal(0, 0.05 * amplitude, num_samples)
+            signal += noise
+            
+            # Scale to the parameter range and add to base
+            param_values = base + signal
+            
+            # Ensure values are within specified range
+            param_values = np.clip(param_values, min_val, max_val)
+            
+            # Add to dataframe
+            df[param] = param_values
+        
+        # Generate output parameters based on inputs
+        
+        # Thickener overflow clarity
+        df['thickener_overflow_turbidity'] = (
+            15 +  # Base turbidity (NTU)
+            -5 * (df['flocculant_dosage'] - param_ranges['flocculant_dosage'][0]) / 
+                (param_ranges['flocculant_dosage'][1] - param_ranges['flocculant_dosage'][0]) +
+            3 * (df['slurry_feed_rate'] - param_ranges['slurry_feed_rate'][0]) / 
+                (param_ranges['slurry_feed_rate'][1] - param_ranges['slurry_feed_rate'][0]) +
+            2 * (df['slurry_solids_pct'] - param_ranges['slurry_solids_pct'][0]) / 
+                (param_ranges['slurry_solids_pct'][1] - param_ranges['slurry_solids_pct'][0]) +
+            np.random.normal(0, 2, num_samples)  # Random variation
+        )
+        
+        # Filter cake moisture
+        df['filter_cake_moisture'] = (
+            10 +  # Base moisture (%)
+            -1.5 * (df['filter_pressure'] - param_ranges['filter_pressure'][0]) / 
+                  (param_ranges['filter_pressure'][1] - param_ranges['filter_pressure'][0]) +
+            -1.0 * (df['blow_time'] - param_ranges['blow_time'][0]) / 
+                  (param_ranges['blow_time'][1] - param_ranges['blow_time'][0]) +
+            0.8 * (df['filter_cycle_time'] - param_ranges['filter_cycle_time'][0]) / 
+                 (param_ranges['filter_cycle_time'][1] - param_ranges['filter_cycle_time'][0]) +
+            1.2 * (df['filter_cake_thickness'] - param_ranges['filter_cake_thickness'][0]) / 
+                 (param_ranges['filter_cake_thickness'][1] - param_ranges['filter_cake_thickness'][0]) +
+            np.random.normal(0, 0.5, num_samples)  # Random variation
+        )
+        
+        # Filtration rate
+        df['filtration_rate'] = (
+            80 +  # Base rate (kg/m²/hr)
+            10 * (df['filter_pressure'] - param_ranges['filter_pressure'][0]) / 
+                (param_ranges['filter_pressure'][1] - param_ranges['filter_pressure'][0]) +
+            -5 * (df['filter_cake_thickness'] - param_ranges['filter_cake_thickness'][0]) / 
+                (param_ranges['filter_cake_thickness'][1] - param_ranges['filter_cake_thickness'][0]) +
+            -8 * (df['filter_cycle_time'] - param_ranges['filter_cycle_time'][0]) / 
+                (param_ranges['filter_cycle_time'][1] - param_ranges['filter_cycle_time'][0]) +
+            np.random.normal(0, 3, num_samples)  # Random variation
+        )
+        
+        # Solids recovery
+        df['solids_recovery'] = (
+            98 +  # Base recovery (%)
+            0.5 * (df['flocculant_dosage'] - param_ranges['flocculant_dosage'][0]) / 
+                 (param_ranges['flocculant_dosage'][1] - param_ranges['flocculant_dosage'][0]) +
+            -0.3 * (df['slurry_feed_rate'] - param_ranges['slurry_feed_rate'][0]) / 
+                  (param_ranges['slurry_feed_rate'][1] - param_ranges['slurry_feed_rate'][0]) +
+            0.2 * (df['thickener_underflow_pct'] - param_ranges['thickener_underflow_pct'][0]) / 
+                 (param_ranges['thickener_underflow_pct'][1] - param_ranges['thickener_underflow_pct'][0]) +
+            np.random.normal(0, 0.2, num_samples)  # Random variation
+        )
+        df['solids_recovery'] = np.clip(df['solids_recovery'], 96.5, 99.5)
+        
+        # Save to CSV
+        output_path = os.path.join(self.config.mineral_processing_dir, 'dewatering_data.csv')
+        df.to_csv(output_path, index=False)
+        logger.info(f"Dewatering data saved to {output_path}")
+        
+        return df
+    
+    def generate_technical_documents(self):
+        """Generate technical documents for all operations"""
+        logger.info("Generating technical documents...")
+        
+        # Templates for different types of documents
+        blast_furnace_templates = [
+            "The optimal blast temperature range for the blast furnace is {temp_low}-{temp_high}°C. Operating below {temp_low}°C can lead to reduced hot metal temperature and increased fuel consumption.",
+            "Increasing the oxygen enrichment from {oxy_low}% to {oxy_high}% can improve productivity by {prod_increase}% and reduce coke rate by {coke_reduction} kg/thm.",
+            "When the silicon content in hot metal exceeds {si_limit}%, it indicates excessive temperature in the lower part of the furnace or reduced slag basicity.",
+            "The moisture in the blast should be controlled between {moisture_low}-{moisture_high} g/Nm³ to maintain stable operation. High moisture increases fuel rate and reduces flame temperature.",
+            "Pulverized coal injection rate should be maintained between {pci_low}-{pci_high} kg/thm for optimal operation. Exceeding {pci_high} kg/thm may lead to incomplete combustion and accumulation in the raceway."
+        ]
+        
+        sinter_templates = [
+            "The optimal basicity (CaO/SiO2) ratio for sinter is {basicity_low}-{basicity_high}. Higher basicity improves reducibility but may decrease physical strength.",
+            "Maintaining bed height between {bed_low}-{bed_high} mm is recommended for achieving consistent sinter quality across the strand.",
+            "Coke breeze addition in the range of {coke_low}-{coke_high}% is optimal for sintering. Excessive coke leads to higher fuel consumption without quality benefits.",
+            "The flame front speed should be controlled between {flame_low}-{flame_high} mm/min. Faster speeds may result in incomplete sintering of the lower layers.",
+            "Return fines ratio should be maintained below {fines_limit}% to ensure consistent sinter strand permeability."
+        ]
+        
+        crushing_templates = [
+            "The optimal closed side setting (CSS) range for the primary crusher is {css_primary_low}-{css_primary_high} mm. Narrower settings increase power consumption and risk of blockages.",
+            "Secondary crusher CSS should be maintained at {css_secondary} mm ± 5 mm to ensure proper size reduction and avoid overloading the tertiary crusher.",
+            "Tertiary crusher performance is optimized when the feed moisture content is kept below {moisture_limit}%. Higher moisture content leads to material buildup and reduced throughput.",
+            "Screen efficiency deteriorates when aperture wear exceeds {aperture_wear}%. Regular inspection and replacement of screen panels is recommended.",
+            "Circulating load in the crushing circuit should be maintained between {circ_load_low}-{circ_load_high}% for optimal energy efficiency and product size distribution."
+        ]
+        
+        pelletization_templates = [
+            "Green pellet strength is optimized when bentonite addition is maintained at {bentonite_low}-{bentonite_high}%. Increasing beyond this range provides minimal benefit.",
+            "Moisture content in the pellet feed should be controlled within {moisture_low}-{moisture_high}% to ensure proper balling and pellet integrity.",
+            "Optimal induration temperature range is {induration_low}-{induration_high}°C. Higher temperatures improve pellet strength but increase energy consumption.",
+            "Cold crushing strength (CCS) of fired pellets should exceed {ccs_min} kg/pellet to ensure adequate durability during handling and blast furnace operation.",
+            "Pellet size distribution should be controlled with 90% of pellets in the range of {size_low}-{size_high} mm for optimal blast furnace performance."
+        ]
+        
+        dewatering_templates = [
+            "Optimal flocculant dosage for the thickener ranges from {floc_low}-{floc_high} g/ton, depending on slurry characteristics. Overdosing wastes reagent and can negatively impact downstream processes.",
+            "Thickener underflow density should be maintained between {density_low}-{density_high}% solids for efficient dewatering and optimal filter performance.",
+            "Filter cake moisture can be reduced by extending blow time to {blow_time} minutes, though this decreases overall throughput.",
+            "Filter cloth blinding increases cake moisture by approximately {moisture_increase}% and should be addressed through regular acid washing.",
+            "Vacuum filtration efficiency decreases when pulp density falls below {pulp_density}% solids. Thickener control is critical for maintaining filter performance."
+        ]
+        
+        # Values to fill in templates
+        template_values = {
+            'temp_low': [1050, 1080, 1100], 'temp_high': [1200, 1220, 1250],
+            'oxy_low': [3, 4], 'oxy_high': [7, 8, 9],
+            'prod_increase': [10, 15, 20], 'coke_reduction': [20, 25, 30],
+            'si_limit': [0.7, 0.8, 0.9],
+            'moisture_low': [15, 16], 'moisture_high': [22, 25],
+            'pci_low': [150, 160], 'pci_high': [190, 200, 210],
+            'basicity_low': [1.8, 1.9], 'basicity_high': [2.1, 2.2, 2.3],
+            'bed_low': [500, 520], 'bed_high': [580, 600],
+            'coke_low': [6.5, 7.0], 'coke_high': [8.0, 8.5],
+            'flame_low': [20, 22], 'flame_high': [28, 30],
+            'fines_limit': [25, 30, 35],
+            'css_primary_low': [150, 160], 'css_primary_high': [190, 200],
+            'css_secondary': [45, 50, 55],
+            'moisture_limit': [6, 7, 8],
+            'aperture_wear': [15, 20, 25],
+            'circ_load_low': [200, 220], 'circ_load_high': [300, 320, 350],
+            'bentonite_low': [0.5, 0.6], 'bentonite_high': [0.9, 1.0],
+            'induration_low': [1250, 1280], 'induration_high': [1330, 1350],
+            'ccs_min': [250, 270, 290],
+            'size_low': [8, 9, 10], 'size_high': [16, 18],
+            'floc_low': [15, 18], 'floc_high': [22, 25],
+            'density_low': [50, 52], 'density_high': [58, 60],
+            'blow_time': [1.0, 1.2, 1.5],
+            'moisture_increase': [1.5, 2.0, 2.5],
+            'pulp_density': [45, 48, 50]
+        }
+        
+        # Create some document categories
+        categories = [
+            "Blast Furnace Operations", 
+            "Sinter Plant Operations",
+            "Crushing Operations",
+            "Pelletization Operations",
+            "Dewatering Operations"
+        ]
+        
+        # Combine all templates
+        all_templates = {
+            "Blast Furnace Operations": blast_furnace_templates,
+            "Sinter Plant Operations": sinter_templates,
+            "Crushing Operations": crushing_templates,
+            "Pelletization Operations": pelletization_templates,
+            "Dewatering Operations": dewatering_templates
+        }
+        
+        # Generate and save documents
+        document_info = []
+        doc_id = 1
+        
+        for category, templates in all_templates.items():
+            for template in templates:
+                # Prepare values for the template
+                template_values_for_doc = {}
+                for key in template_values.keys():
+                    if key in template:
+                        template_values_for_doc[key] = np.random.choice(template_values[key])
+                
+                # Fill in the template
+                doc_content = template.format(**template_values_for_doc)
+                
+                # Create file name
+                file_name = f"DOC{doc_id:03d}_{category.replace(' ', '_')}.txt"
+                file_path = os.path.join(self.config.docs_dir, file_name)
+                
+                # Write document to file
+                with open(file_path, 'w') as f:
+                    f.write(doc_content)
+                
+                # Store document information
+                document_info.append({
+                    'id': doc_id,
+                    'file_name': file_name,
+                    'category': category,
+                    'content': doc_content
+                })
+                
+                doc_id += 1
+        
+        # Save document info to CSV for reference
+        doc_info_df = pd.DataFrame(document_info)
+        doc_info_path = os.path.join(self.config.data_dir, 'document_info.csv')
+        doc_info_df.to_csv(doc_info_path, index=False)
+        
+        logger.info(f"Generated {len(document_info)} technical documents")
+        logger.info(f"Document info saved to {doc_info_path}")
+        
+        return document_info
+
+#################################
+# DATA PROCESSING
+#################################
+
+class TimeSeriesDataset(Dataset):
+    """Dataset for process time series data"""
+    def __init__(self, features, targets, seq_length=24):
+        self.features = features
+        self.targets = targets
+        self.seq_length = seq_length
+        
+    def __len__(self):
+        return len(self.features) - self.seq_length
+        
+    def __getitem__(self, idx):
+        x = self.features[idx:idx+self.seq_length]
+        y = self.targets[idx+self.seq_length]
+        return torch.FloatTensor(x), torch.FloatTensor(y)
+
+class DataProcessor:
+    """Process and prepare data for model training"""
+    def __init__(self, config):
+        self.config = config
+        self.scalers = {}
+        
+    def load_csv(self, file_path, index_col=None):
+        """Load data from CSV file"""
+        try:
+            df = pd.read_csv(file_path, index_col=index_col)
+            logger.info(f"Loaded data from {file_path}: {df.shape}")
+            return df
+        except Exception as e:
+            logger.error(f"Error loading CSV file: {e}")
+            return None
+            
+    def preprocess_time_series(self, df, feature_cols, target_cols, timestamp_col=None):
+        """Preprocess time series data"""
+        # Handle missing values
+        df = df.interpolate(method='linear')
+        
+        # Add time-based features if timestamp column exists
+        if timestamp_col and timestamp_col in df.columns:
+            df['hour'] = pd.to_datetime(df[timestamp_col]).dt.hour
+            df['day_of_week'] = pd.to_datetime(df[timestamp_col]).dt.dayofweek
+            df['month'] = pd.to_datetime(df[timestamp_col]).dt.month
+            
+            # Add these new columns to feature_cols
+            time_features = ['hour', 'day_of_week', 'month']
+            feature_cols = feature_cols + time_features
+        
+        # Scale features
+        X = df[feature_cols].values
+        y = df[target_cols].values
+        
+        scaler_x = StandardScaler()
+        scaler_y = StandardScaler()
+        
+        X_scaled = scaler_x.fit_transform(X)
+        y_scaled = scaler_y.fit_transform(y)
+        
+        # Save scalers
+        self.scalers['feature_scaler'] = scaler_x
+        self.scalers['target_scaler'] = scaler_y
+        
+        # Save scalers to disk
+        prefix = timestamp_col.split('_')[0] if timestamp_col else 'generic'
+        joblib.dump(scaler_x, os.path.join(self.config.model_dir, f'{prefix}_x_scaler.pkl'))
+        joblib.dump(scaler_y, os.path.join(self.config.model_dir, f'{prefix}_y_scaler.pkl'))
+        
+        return X_scaled, y_scaled, feature_cols
+    
+    def create_time_series_datasets(self, X, y, seq_length=None):
+        """Create train, validation, and test datasets for time series data"""
+        if seq_length is None:
+            seq_length = self.config.sequence_length
+            
+        dataset = TimeSeriesDataset(X, y, seq_length)
+        
+        # Calculate split sizes
+        train_size = int(len(dataset) * self.config.train_size)
+        val_size = int(len(dataset) * self.config.val_size)
+        test_size = len(dataset) - train_size - val_size
+        
+        # Split the dataset
+        train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(
+            dataset, [train_size, val_size, test_size]
+        )
+        
+        # Create data loaders
+        train_loader = DataLoader(
+            train_dataset, 
+            batch_size=self.config.batch_size, 
+            shuffle=True
+        )
+        
+        val_loader = DataLoader(
+            val_dataset, 
+            batch_size=self.config.batch_size
+        )
+        
+        test_loader = DataLoader(
+            test_dataset, 
+            batch_size=self.config.batch_size
+        )
+        
+        logger.info(f"Created datasets - Train: {len(train_dataset)}, Val: {len(val_dataset)}, Test: {len(test_dataset)}")
+        
+        return {
+            'train': train_loader,
+            'val': val_loader,
+            'test': test_loader
+        }
+    
+    def prepare_tabular_data(self, df, feature_cols, target_cols):
+        """Prepare tabular data for traditional ML models"""
+        # Handle missing values
+        df = df.interpolate(method='linear')
+        
+        # Split data
+        X = df[feature_cols]
+        y = df[target_cols]
+        
+        X_train, X_temp, y_train, y_temp = train_test_split(
+            X, y, 
+            test_size=(self.config.val_size + self.config.test_size),
+            random_state=self.config.seed
+        )
+        
+        X_val, X_test, y_val, y_test = train_test_split(
+            X_temp, y_temp,
+            test_size=self.config.test_size/(self.config.val_size + self.config.test_size),
+            random_state=self.config.seed
+        )
+        
+        # Scale features
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_val_scaled = scaler.transform(X_val)
+        X_test_scaled = scaler.transform(X_test)
+        
+        # Save scaler
+        self.scalers['feature_scaler'] = scaler
+        
+        # Get a prefix based on the first feature name
+        prefix = feature_cols[0].split('_')[0]
+        joblib.dump(scaler, os.path.join(self.config.model_dir, f'{prefix}_scaler.pkl'))
+        
+        return {
+            'X_train': X_train_scaled, 
+            'X_val': X_val_scaled, 
+            'X_test': X_test_scaled,
+            'y_train': y_train, 
+            'y_val': y_val, 
+            'y_test': y_test,
+            'feature_names': feature_cols
+        }
+
+#################################
+# MODEL DEFINITIONS
+#################################
+
+class LSTMModel(nn.Module):
+    """LSTM model for time series prediction"""
+    def __init__(self, input_dim, hidden_dim=128, num_layers=2, output_dim=1, dropout=0.2):
+        super().__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        
+        self.lstm = nn.LSTM(
+            input_dim, hidden_dim, num_layers,
+            batch_first=True, dropout=dropout
+        )
+        
+        self.fc = nn.Linear(hidden_dim, output_dim)
+        
+    def forward(self, x):
+        # Initialize hidden state with zeros
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        
+        # Forward propagate LSTM
+        out, _ = self.lstm(x, (h0, c0))
+        
+        # Decode the hidden state of the last time step
+        out = self.fc(out[:, -1, :])
+        return out
+
+class TimeSeriesModelTrainer:
+    """Trainer for time series models"""
+    def __init__(self, model, dataloaders, config):
+        self.model = model
+        self.dataloaders = dataloaders
+        self.config = config
+        self.device = config.device
+        
+        # Move model to device
+        self.model.to(self.device)
+        
+        # Setup optimizer and loss function
+        self.optimizer = optim.Adam(
+            self.model.parameters(), 
+            lr=config.learning_rate
+        )
+        self.criterion = nn.MSELoss()
+        
+        # For tracking training
+        self.train_losses = []
+        self.val_losses = []
+        self.best_val_loss = float('inf')
+        self.patience_counter = 0
+        
+    def train_epoch(self):
+        """Train for one epoch"""
+        self.model.train()
+        total_loss = 0
+        
+        for batch_idx, (data, target) in enumerate(self.dataloaders['train']):
+            # Move data to device
+            data, target = data.to(self.device), target.to(self.device)
+            
+            # Zero the parameter gradients
+            self.optimizer.zero_grad()
+            
+            # Forward pass
+            output = self.model(data)
+            loss = self.criterion(output, target)
+            
+            # Backward pass and optimize
+            loss.backward()
+            self.optimizer.step()
+            
+            # Accumulate loss
+            total_loss += loss.item()
+            
+        avg_loss = total_loss / len(self.dataloaders['train'])
+        self.train_losses.append(avg_loss)
+        
+        return avg_loss
+    
+    def validate(self):
+        """Validate the model"""
+        self.model.eval()
+        total_loss = 0
+        
+        with torch.no_grad():
+            for data, target in self.dataloaders['val']:
+                data, target = data.to(self.device), target.to(self.device)
+                output = self.model(data)
+                loss = self.criterion(output, target)
+                total_loss += loss.item()
+                
+        avg_loss = total_loss / len(self.dataloaders['val'])
+        self.val_losses.append(avg_loss)
+        
+        return avg_loss
+    
+    def train(self):
+        """Train the model for specified number of epochs"""
+        logger.info(f"Starting training for {self.config.epochs} epochs")
+        
+        for epoch in range(self.config.epochs):
+            train_loss = self.train_epoch()
+            val_loss = self.validate()
+            
+            logger.info(f"Epoch {epoch+1}/{self.config.epochs} - "
+                        f"Train Loss: {train_loss:.6f}, "
+                        f"Val Loss: {val_loss:.6f}")
+            
+            # Early stopping
+            if val_loss < self.best_val_loss:
+                self.best_val_loss = val_loss
+                self.patience_counter = 0
+                self.save_model('best_model.pt')
+                logger.info(f"New best model saved with validation loss: {val_loss:.6f}")
+            else:
+                self.patience_counter += 1
+                
+            # Check early stopping condition
+            if self.patience_counter >= self.config.early_stopping_patience:
+                logger.info(f"Early stopping triggered after {epoch+1} epochs")
+                break
+                
+        self.save_model('final_model.pt')
+        
+        return self.train_losses, self.val_losses
+    
+    def test(self):
+        """Test the trained model"""
+        # Load the best model
+        self.load_model('best_model.pt')
+        
+        self.model.eval()
+        predictions = []
+        actuals = []
+        
+        with torch.no_grad():
+            for data, target in self.dataloaders['test']:
+                data, target = data.to(self.device), target.to(self.device)
+                output = self.model(data)
+                
+                # Store predictions and actual values
+                predictions.append(output.cpu().numpy())
+                actuals.append(target.cpu().numpy())
+                
+        # Concatenate batches
+        predictions = np.vstack(predictions)
+        actuals = np.vstack(actuals)
+        
+        # Calculate metrics
+        mse = mean_squared_error(actuals, predictions)
+        mae = mean_absolute_error(actuals, predictions)
+        r2 = r2_score(actuals, predictions)
+        
+        results = {
+            'mse': mse,
+            'mae': mae,
+            'r2': r2,
+            'predictions': predictions,
+            'actuals': actuals
+        }
+        
+        logger.info(f"Test Results - MSE: {mse:.6f}, MAE: {mae:.6f}, R²: {r2:.6f}")
+        
+        return results
+    
+    def save_model(self, filename):
+        """Save the model"""
+        model_path = os.path.join(self.config.model_dir, filename)
+        torch.save({
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'train_losses': self.train_losses,
+            'val_losses': self.val_losses,
+            'best_val_loss': self.best_val_loss,
+        }, model_path)
+    
+    def load_model(self, filename):
+        """Load a trained model"""
+        model_path = os.path.join(self.config.model_dir, filename)
+        if os.path.exists(model_path):
+            checkpoint = torch.load(model_path, map_location=self.device)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.train_losses = checkpoint['train_losses']
+            self.val_losses = checkpoint['val_losses']
+            self.best_val_loss = checkpoint['best_val_loss']
+            logger.info(f"Model loaded from {model_path}")
+            return True
+        else:
+            logger.error(f"Model file not found at {model_path}")
+            return False
+
+class RandomForestTrainer:
+    """Trainer for Random Forest models"""
+    def __init__(self, data, config, n_estimators=100, max_depth=None):
+        self.data = data
+        self.config = config
+        self.model = RandomForestRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            random_state=config.seed
+        )
+        
+    def train(self):
+        """Train the Random Forest model"""
+        logger.info("Training Random Forest model")
+        self.model.fit(self.data['X_train'], self.data['y_train'])
+        
+        # Save the model
+        prefix = self.data['feature_names'][0].split('_')[0]
+        model_path = os.path.join(self.config.model_dir, f'{prefix}_rf_model.pkl')
+        joblib.dump(self.model, model_path)
+        logger.info(f"Model saved to {model_path}")
+        
+        # Evaluate on validation set
+        val_predictions = self.model.predict(self.data['X_val'])
+        val_mse = mean_squared_error(self.data['y_val'], val_predictions)
+        val_r2 = r2_score(self.data['y_val'], val_predictions)
+        
+        logger.info(f"Validation - MSE: {val_mse:.6f}, R²: {val_r2:.6f}")
+        
+        return self.model
+    
+    def test(self):
+        """Test the trained Random Forest model"""
+        predictions = self.model.predict(self.data['X_test'])
+        mse = mean_squared_error(self.data['y_test'], predictions)
+        mae = mean_absolute_error(self.data['y_test'], predictions)
+        r2 = r2_score(self.data['y_test'], predictions)
+        
+        results = {
+            'mse': mse,
+            'mae': mae,
+            'r2': r2,
+            'predictions': predictions,
+            'actuals': self.data['y_test'].values
+        }
+        
+        logger.info(f"Test Results - MSE: {mse:.6f}, MAE: {mae:.6f}, R²: {r2:.6f}")
+        
+        # Feature importance
+        feature_importance = pd.DataFrame(
+            self.model.feature_importances_,
+            index=self.data['feature_names'],
+            columns=['importance']
+        ).sort_values('importance', ascending=False)
+        
+        # Save feature importance
+        prefix = self.data['feature_names'][0].split('_')[0]
+        importance_file = os.path.join(self.config.results_dir, f'{prefix}_feature_importance.csv')
+        feature_importance.to_csv(importance_"""
+JSW Steel Complete Integrated MVP Model
+
+This is a comprehensive, standalone implementation of the JSW Steel plant AI solution,
+including mineral processing, sinter plant, and blast furnace operations.
+
+Features:
+- Built-in synthetic data generation
+- Integrated ML/DL models for all plant operations
+- Knowledge retrieval system
+- Dashboard and visualization capabilities
+- Ready to run as a complete demo
+
+Author: Claude AI
+Date: April 2025
+"""
+
+import os
+import sys
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.ensemble import RandomForestRegressor
+import joblib
+import json
+import logging
+import time
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime, timedelta
+import webbrowser
+import threading
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+import shutil
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger("JSW_MVP")
+
+#################################
+# CONFIGURATION
+#################################
+
+class Config:
+    """Configuration class for the JSW Steel MVP"""
+    def __init__(self):
+        # Core settings
+        self.seed = 42
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        
+        # Directory structure
+        self.base_dir = "jsw_mvp"
+        self.data_dir = os.path.join(self.base_dir, "data")
+        self.model_dir = os.path.join(self.base_dir, "models")
+        self.results_dir = os.path.join(self.base_dir, "results")
+        self.web_dir = os.path.join(self.base_dir, "web")
+        
+        # Data subdirectories
+        self.blast_furnace_dir = os.path.join(self.data_dir, "blast_furnace")
+        self.sinter_dir = os.path.join(self.data_dir, "sinter")
+        self.mineral_processing_dir = os.path.join(self.data_dir, "mineral_processing")
+        self.docs_dir = os.path.join(self.data_dir, "technical_documents")
+        
+        # Model parameters
+        self.batch_size = 32
+        self.epochs = 20
+        self.learning_rate = 1e-3
+        self.sequence_length = 24  # For time series models
+        self.train_size = 0.7
+        self.val_size = 0.15
+        self.test_size = 0.15
+        self.early_stopping_patience = 5
+        
+        # Create directory structure
+        self._create_directories()
+        
+        # Set seeds for reproducibility
+        self._set_seeds()
+    
+    def _create_directories(self):
+        """Create necessary directories"""
+        directories = [
+            self.base_dir, 
+            self.data_dir, 
+            self.model_dir, 
+            self.results_dir, 
+            self.web_dir,
+            self.blast_furnace_dir,
+            self.sinter_dir,
+            self.mineral_processing_dir,
+            self.docs_dir,
+            os.path.join(self.mineral_processing_dir, "technical_documents")
+        ]
+        
+        for directory in directories:
+            os.makedirs(directory, exist_ok=True)
+    
+    def _set_seeds(self):
+        """Set seeds for reproducibility"""
+        torch.manual_seed(self.seed)
+        np.random.seed(self.seed)
+
+#################################
+# DATA GENERATION
+#################################
+
+class SyntheticDataGenerator:
+    """Generate synthetic data for JSW Steel plant operations"""
+    
+    def __init__(self, config):
+        """Initialize the data generator"""
+        self.config = config
+    
+    def generate_all_data(self):
+        """Generate all synthetic data"""
+        logger.info("Generating synthetic data for all operations...")
+        
+        # Generate blast furnace data
+        self.generate_blast_furnace_data()
+        
+        # Generate sinter data
+        self.generate_sinter_data()
+        
+        # Generate mineral processing data
+        self.generate_crushing_data()
+        self.generate_pelletization_data()
+        self.generate_dewatering_data()
+        
+        # Generate technical documents
+        self.generate_technical_documents()
+        
+        logger.info("Synthetic data generation complete.")
+    
+    def generate_blast_furnace_data(self, num_samples=168, start_date='2024-01-01'):
+        """
+        Generate blast furnace time series data
+        num_samples: Number of hourly samples (default is 1 week of hourly data)
+        """
+        logger.info(f"Generating {num_samples} samples of blast furnace data...")
+        
+        # Create timestamp series (hourly)
+        start = pd.to_datetime(start_date)
+        timestamps = [start + timedelta(hours=i) for i in range(num_samples)]
+        
+        # Define normal operating ranges for parameters
+        param_ranges = {
+            'blast_temperature': (1050, 1200),  # °C
+            'oxygen_enrichment': (3, 8),        # %
+            'coal_injection_rate': (150, 200),  # kg/thm
+            'top_pressure': (1.8, 2.5),         # bar
+            'moisture': (15, 25),               # g/Nm³
+            'ore_fe_content': (58, 65),         # %
+            'sinter_ratio': (60, 80),           # %
+            'pellet_ratio': (15, 25),           # %
+            'coke_reactivity': (50, 65),        # %
+        }
+        
+        # Initialize dataframe
+        df = pd.DataFrame({'timestamp': timestamps})
+        
+        # Generate base signals with realistic patterns
+        for param, (min_val, max_val) in param_ranges.items():
+            # Base value in the middle of the range
+            base = (min_val + max_val) / 2
+            # Range amplitude
+            amplitude = (max_val - min_val) / 2 * 0.8  # Use 80% of the full range for normal variation
+            
+            # Generate base signal
+            signal = np.zeros(num_samples)
+            
+            # Add long-term trend (very slight upward or downward)
+            trend = np.linspace(0, np.random.uniform(-0.1, 0.1) * amplitude, num_samples)
+            signal += trend
+            
+            # Add daily variation
+            daily = amplitude * 0.2 * np.sin(2 * np.pi * np.arange(num_samples) / 24)
+            signal += daily
+            
+            # Add random walk component (autocorrelated noise)
+            random_walk = np.zeros(num_samples)
+            for i in range(1, num_samples):
+                random_walk[i] = random_walk[i-1] + np.random.normal(0, 0.02 * amplitude)
+            signal += random_walk
+            
+            # Add random noise
+            noise = np.random.normal(0, 0.05 * amplitude, num_samples)
+            signal += noise
+            
+            # Scale to the parameter range and add to base
+            param_values = base + signal
+            
+            # Ensure values are within specified range
+            param_values = np.clip(param_values, min_val, max_val)
+            
+            # Add to dataframe
+            df[param] = param_values
+        
+        # Generate output parameters based on inputs
+        # Hot metal temperature (influenced by blast temp, oxygen, etc.)
+        df['hot_metal_temperature'] = (
+            1350 +  # Base temperature
+            0.15 * (df['blast_temperature'] - param_ranges['blast_temperature'][0]) +
+            10 * (df['oxygen_enrichment'] - param_ranges['oxygen_enrichment'][0]) / 
+                 (param_ranges['oxygen_enrichment'][1] - param_ranges['oxygen_enrichment'][0]) +
+            5 * (df['coal_injection_rate'] - param_ranges['coal_injection_rate'][0]) / 
+                (param_ranges['coal_injection_rate'][1] - param_ranges['coal_injection_rate'][0]) -
+            10 * (df['moisture'] - param_ranges['moisture'][0]) / 
+                (param_ranges['moisture'][1] - param_ranges['moisture'][0]) +
+            np.random.normal(0, 5, num_samples)  # Random variation
+        )
+        
+        # Silicon in hot metal
+        df['hot_metal_si'] = (
+            0.3 +  # Base silicon
+            0.2 * (df['hot_metal_temperature'] - 1450) / 100 +  # Higher temp -> higher Si
+            0.1 * (df['blast_temperature'] - param_ranges['blast_temperature'][0]) / 
+                  (param_ranges['blast_temperature'][1] - param_ranges['blast_temperature'][0]) -
+            0.1 * (df['moisture'] - param_ranges['moisture'][0]) / 
+                  (param_ranges['moisture'][1] - param_ranges['moisture'][0]) +
+            np.random.normal(0, 0.05, num_samples)  # Random variation
+        )
+        df['hot_metal_si'] = np.clip(df['hot_metal_si'], 0.2, 0.8)
+        
+        # Fuel rate
+        df['fuel_rate'] = (
+            450 +  # Base fuel rate
+            -20 * (df['oxygen_enrichment'] - param_ranges['oxygen_enrichment'][0]) / 
+                  (param_ranges['oxygen_enrichment'][1] - param_ranges['oxygen_enrichment'][0]) +
+            -30 * (df['coal_injection_rate'] - param_ranges['coal_injection_rate'][0]) / 
+                  (param_ranges['coal_injection_rate'][1] - param_ranges['coal_injection_rate'][0]) +
+            10 * (df['moisture'] - param_ranges['moisture'][0]) / 
+                 (param_ranges['moisture'][1] - param_ranges['moisture'][0]) +
+            np.random.normal(0, 10, num_samples)  # Random variation
+        )
+        
+        # Save to CSV
+        output_path = os.path.join(self.config.blast_furnace_dir, 'blast_furnace_data.csv')
+        df.to_csv(output_path, index=False)
+        logger.info(f"Blast furnace data saved to {output_path}")
+        
+        return df
+    
+    def generate_sinter_data(self, num_samples=100):
+        """
+        Generate sinter quality data
+        num_samples: Number of samples (default 100)
+        """
+        logger.info(f"Generating {num_samples} samples of sinter quality data...")
+        
+        # Define parameter ranges
+        param_ranges = {
+            'basicity': (1.7, 2.3),           # CaO/SiO2 ratio
+            'sio2_content': (4.5, 6.5),       # %
+            'al2o3_content': (1.5, 2.5),      # %
+            'mgo_content': (1.2, 2.0),        # %
+            'bed_height': (500, 600),         # mm
+            'ignition_temperature': (1050, 1150),  # °C
+            'burn_through_temperature': (1200, 1300),  # °C
+            'coke_rate': (6.5, 8.5),          # %
+            'moisture_content': (5.5, 7.5),   # %
+            'return_fines_ratio': (20, 30),   # %
+        }
+        
+        # Create sample IDs
+        sample_ids = [f"SIN{i+1:04d}" for i in range(num_samples)]
+        
+        # Initialize dataframe
+        df = pd.DataFrame({'sample_id': sample_ids})
+        
+        # Generate input parameters with correlations
+        # First, generate independent random variables
+        for param, (min_val, max_val) in param_ranges.items():
+            # Generate random values within the range
+            values = np.random.uniform(min_val, max_val, num_samples)
+            df[param] = values
+        
+        # Add some realistic correlations
+        # Higher basicity typically means lower SiO2
+        df['sio2_content'] = df['sio2_content'] - 0.5 * (df['basicity'] - param_ranges['basicity'][0]) / (param_ranges['basicity'][1] - param_ranges['basicity'][0])
+        df['sio2_content'] = np.clip(df['sio2_content'], param_ranges['sio2_content'][0], param_ranges['sio2_content'][1])
+        
+        # Higher coke rate might lead to higher burn through temperature
+        df['burn_through_temperature'] = df['burn_through_temperature'] + 20 * (df['coke_rate'] - param_ranges['coke_rate'][0]) / (param_ranges['coke_rate'][1] - param_ranges['coke_rate'][0])
+        df['burn_through_temperature'] = np.clip(df['burn_through_temperature'], param_ranges['burn_through_temperature'][0], param_ranges['burn_through_temperature'][1])
+        
+        # Generate output parameters based on inputs
+        
+        # Tumbler Index (measure of sinter strength)
+        df['tumbler_index'] = (
+            70 +  # Base value
+            3 * (df['basicity'] - param_ranges['basicity'][0]) / 
+                (param_ranges['basicity'][1] - param_ranges['basicity'][0]) +
+            1 * (df['mgo_content'] - param_ranges['mgo_content'][0]) / 
+                (param_ranges['mgo_content'][1] - param_ranges['mgo_content'][0]) +
+            2 * (df['coke_rate'] - param_ranges['coke_rate'][0]) / 
+                (param_ranges['coke_rate'][1] - param_ranges['coke_rate'][0]) -
+            3 * (df['moisture_content'] - param_ranges['moisture_content'][0]) / 
+                (param_ranges['moisture_content'][1] - param_ranges['moisture_content'][0]) +
+            np.random.normal(0, 1.5, num_samples)  # Random variation
+        )
+        df['tumbler_index'] = np.clip(df['tumbler_index'], 65, 80)
+        
+        # Reducibility Index
+        df['reducibility_index'] = (
+            65 +  # Base value
+            2 * (df['basicity'] - param_ranges['basicity'][0]) / 
+                (param_ranges['basicity'][1] - param_ranges['basicity'][0]) -
+            3 * (df['al2o3_content'] - param_ranges['al2o3_content'][0]) / 
+                (param_ranges['al2o3_content'][1] - param_ranges['al2o3_content'][0]) +
+            2 * (df['burn_through_temperature'] - param_ranges['burn_through_temperature'][0]) / 
+                (param_ranges['burn_through_temperature'][1] - param_ranges['burn_through_temperature'][0]) +
+            np.random.normal(0, 2.0, num_samples)  # Random variation
+        )
+        df['reducibility_index'] = np.clip(df['reducibility_index'], 60, 75)
+        
+        # Productivity
+        df['productivity'] = (
+            1.3 +  # Base value
+            0.1 * (df['bed_height'] - param_ranges['bed_height'][0]) / 
+                 (param_ranges['bed_height'][1] - param_ranges['bed_height'][0]) +
+            0.15 * (df['coke_rate'] - param_ranges['coke_rate'][0]) / 
+                  (param_ranges['coke_rate'][1] - param_ranges['coke_rate'][0]) -
+            0.1 * (df['return_fines_ratio'] - param_ranges['return_fines_ratio'][0]) / 
+                 (param_ranges['return_fines_ratio'][1] - param_ranges['return_fines_ratio'][0]) +
+            np.random.normal(0, 0.05, num_samples)  # Random variation
+        )
+        df['productivity'] = np.clip(df['productivity'], 1.2, 1.5)
+        
+        # Save to CSV
+        output_path = os.path.join(self.config.sinter_dir, 'sinter_quality_data.csv')
+        df.to_csv(output_path, index=False)
+        logger.info(f"Sinter quality data saved to {output_path}")
+        
+        return df
+    
+    def generate_crushing_data(self, num_samples=168, start_date='2024-01-01'):
+        """Generate synthetic data for crushing operations"""
+        logger.info(f"Generating {num_samples} samples of crushing data...")
+        
+        # Create timestamp series (hourly)
+        start = pd.to_datetime(start_date)
+        timestamps = [start + timedelta(hours=i) for i in range(num_samples)]
+        
+        # Define normal operating ranges for parameters
+        param_ranges = {
+            'ore_feed_rate': (800, 1200),        # ton/hr
+            'ore_moisture': (4, 8),              # %
+            'ore_hardness': (4, 7),              # Mohs scale
+            'css_primary': (150, 200),           # mm (closed side setting - primary crusher)
+            'css_secondary': (40, 60),           # mm (closed side setting - secondary crusher)
+            'css_tertiary': (10, 20),            # mm (closed side setting - tertiary crusher)
+            'screen_aperture': (5, 15),          # mm
+            'circulating_load': (200, 350),      # %
+        }
+        
+        # Initialize dataframe
+        df = pd.DataFrame({'timestamp': timestamps})
+        
+        # Generate base signals with realistic patterns
+        for param, (min_val, max_val) in param_ranges.items():
+            # Base value in the middle of the range
+            base = (min_val + max_val) / 2
+            # Range amplitude
+            amplitude = (max_val - min_val) / 2 * 0.8
+            
+            # Generate base signal
+            signal = np.zeros(num_samples)
+            
+            # Add daily variation
+            daily = amplitude * 0.2 * np.sin(2 * np.pi * np.arange(num_samples) / 24)
+            signal += daily
+            
+            # Add random walk component (autocorrelated noise)
+            random_walk = np.zeros(num_samples)
+            for i in range(1, num_samples):
+                random_walk[i] = random_walk[i-1] + np.random.normal(0, 0.02 * amplitude)
+            signal += random_walk
+            
+            # Add random noise
+            noise = np.random.normal(0, 0.05 * amplitude, num_samples)
+            signal += noise
+            
+            # Scale to the parameter range and add to base
+            param_values = base + signal
+            
+            # Ensure values are within specified range
+            param_values = np.clip(param_values, min_val, max_val)
+            
+            # Add to dataframe
+            df[param] = param_values
+        
+        # Generate output parameters based on inputs
+        
+        # Power consumption - primary crusher
+        df['power_consumption_primary'] = (
+            250 +  # Base power
+            0.15 * (df['ore_feed_rate'] - param_ranges['ore_feed_rate'][0]) +
+            10 * (df['ore_hardness'] - param_ranges['ore_hardness'][0]) +
+            -5 * (df['css_primary'] - param_ranges['css_primary'][0]) / 
+                (param_ranges['css_primary'][1] - param_ranges['css_primary'][0]) +
+            np.random.normal(0, 5, num_samples)  # Random variation
+        )
+        
+        # Power consumption - secondary crusher
+        df['power_consumption_secondary'] = (
+            180 +  # Base power
+            0.1 * (df['ore_feed_rate'] - param_ranges['ore_feed_rate'][0]) +
+            8 * (df['ore_hardness'] - param_ranges['ore_hardness'][0]) +
+            -6 * (df['css_secondary'] - param_ranges['css_secondary'][0]) / 
+                (param_ranges['css_secondary'][1] - param_ranges['css_secondary'][0]) +
+            np.random.normal(0, 4, num_samples)  # Random variation
+        )
+        
+        # Power consumption - tertiary crusher
+        df['power_consumption_tertiary'] = (
+            120 +  # Base power
+            0.08 * (df['ore_feed_rate'] - param_ranges['ore_feed_rate'][0]) +
+            6 * (df['ore_hardness'] - param_ranges['ore_hardness'][0]) +
+            -4 * (df['css_tertiary'] - param_ranges['css_tertiary'][0]) / 
+                (param_ranges['css_tertiary'][1] - param_ranges['css_tertiary'][0]) +
+            np.random.normal(0, 3, num_samples)  # Random variation
+        )
+        
+        # Product size P80
+        df['product_p80'] = (
+            10 +  # Base P80
+            0.01 * (df['ore_feed_rate'] - param_ranges['ore_feed_rate'][0]) +
+            0.5 * (df['css_tertiary'] - param_ranges['css_tertiary'][0]) / 
+                 (param_ranges['css_tertiary'][1] - param_ranges['css_tertiary'][0]) +
+            0.3 * (df['screen_aperture'] - param_ranges['screen_aperture'][0]) / 
+                 (param_ranges['screen_aperture'][1] - param_ranges['screen_aperture'][0]) +
+            np.random.normal(0, 0.5, num_samples)  # Random variation
+        )
+        
+        # Total throughput
+        df['total_throughput'] = (
+            df['ore_feed_rate'] * 0.95 +  # Base throughput (95% of feed rate)
+            -0.02 * df['ore_feed_rate'] * (df['ore_moisture'] - param_ranges['ore_moisture'][0]) / 
+                   (param_ranges['ore_moisture'][1] - param_ranges['ore_moisture'][0]) +
+            -0.03 * df['ore_feed_rate'] * (df['ore_hardness'] - param_ranges['ore_hardness'][0]) / 
+                   (param_ranges['ore_hardness'][1] - param_ranges['ore_hardness'][0]) +
+            np.random.normal(0, 10, num_samples)  # Random variation
+        )
+        
+        # Save to CSV
+        output_path = os.path.join(self.config.mineral_processing_dir, 'crushing_data.csv')
+        df.to_csv(output_path, index=False)
+        logger.info(f"Crushing data saved to {output_path}")
+        
+        return df
+    
+    def generate_pelletization_data(self, num_samples=100):
+        """Generate synthetic data for pelletization operations"""
+        logger.info(f"Generating {num_samples} samples of pelletization data...")
+        
+        # Define parameter ranges
+        param_ranges = {
+            'concentrate_fe': (63, 67),          # %
+            'concentrate_silica': (2, 6),        # %
+            'concentrate_alumina': (0.5, 2),     # %
+            'bentonite_addition': (0.5, 1.0),    # %
+            'moisture_content': (8, 10),         # %
+            'disc_speed': (6, 9),                # rpm
+            'disc_angle': (45, 50),              # degrees
+            'retention_time': (8, 12),           # minutes
+            'induration_temp': (1250, 1350),     # °C
+            'induration_time': (20, 30),         # minutes
+        }
+        
+        # Create sample IDs
+        sample_ids = [f"PEL{i+1:04d}" for i in range(num_samples)]
+        
+        # Initialize dataframe
+        df = pd.DataFrame({'sample_id': sample_ids})
+        
+        # Generate input parameters
+        for param, (min_val, max_val) in param_ranges.items():
+            # Generate random values within the range
+            values = np.random.uniform(min_val, max_val, num_samples)
+            df[param] = values
+        
+        # Add some realistic correlations
+        # Higher Fe typically means lower silica
+        df['concentrate_silica'] = df['concentrate_silica'] - 0.5 * (df['concentrate_fe'] - param_ranges['concentrate_fe'][0]) / (param_ranges['concentrate_fe'][1] - param_ranges['concentrate_fe'][0])
+        df['concentrate_silica'] = np.clip(df['concentrate_silica'], param_ranges['concentrate_silica'][0], param_ranges['concentrate_silica'][1])
+        
+        # Generate output parameters based on inputs
+        
+        # Green pellet strength
+        df['green_pellet_strength'] = (
+            12 +  # Base strength (N/pellet)
+            2 * (df['bentonite_addition'] - param_ranges['bentonite_addition'][0]) / 
+                (param_ranges['bentonite_addition'][1] - param_ranges['bentonite_addition'][0]) +
+            1 * (df['moisture_content'] - param_ranges['moisture_content'][0]) / 
+                (param_ranges['moisture_content'][1] - param_ranges['moisture_content'][0]) +
+            0.5 * (df['retention_time'] - param_ranges['retention_time'][0]) / 
+                 (param_ranges['retention_time'][1] - param_ranges['retention_time'][0]) +
+            np.random.normal(0, 0.5, num_samples)  # Random variation
+        )
+        
+        # Cold crushing strength
+        df['cold_crushing_strength'] = (
+            250 +  # Base strength (kg/pellet)
+            15 * (df['induration_temp'] - param_ranges['induration_temp'][0]) / 
+                (param_ranges['induration_temp'][1] - param_ranges['induration_temp'][0]) +
+            10 * (df['induration_time'] - param_ranges['induration_time'][0]) / 
+                (param_ranges['induration_time'][1] - param_ranges['induration_time'][0]) +
+            -5 * (df['concentrate_silica'] - param_ranges['concentrate_silica'][0]) / 
+                (param_ranges['concentrate_silica'][1] - param_ranges['concentrate_silica'][0]) +
+            np.random.normal(0, 10, num_samples)  # Random variation
+        )
+        
+        # Pellet porosity
+        df['pellet_porosity'] = (
+            25 +  # Base porosity (%)
+            -2 * (df['induration_temp'] - param_ranges['induration_temp'][0]) / 
+                (param_ranges['induration_temp'][1] - param_ranges['induration_temp'][0]) +
+            -1 * (df['induration_time'] - param_ranges['induration_time'][0]) / 
+                (param_ranges['induration_time'][1] - param_ranges['induration_time'][0]) +
+            0.5 * (df['moisture_content'] - param_ranges['moisture_content'][0]) / 
+                 (param_ranges['moisture_content'][1] - param_ranges['moisture_content'][0]) +
+            np.random.normal(0, 1, num_samples)  # Random variation
+        )
+        
+        # Tumble index
+        df['tumble_index'] = (
+            92 +  # Base tumble index (%)
+            1.5 * (df['cold_crushing_strength'] - 250) / 100 +  # Correlation with CCS
+            -1 * (df['pellet_porosity'] - 25) / 5 +  # Correlation with porosity
+            np.random.normal(0, 0.5, num_samples)  # Random variation
+        )
+        df['tumble_index'] = np.clip(df['tumble_index'], 90, 96)
+        
+        # Abrasion index
+        df['abrasion_index'] = (
+            5 +  # Base abrasion index (%)
+            -0.5 * (df['cold_crushing_strength'] - 250) / 100 +  # Correlation with CCS
+            0.3 * (df['pellet_porosity'] - 25) / 5 +  # Correlation with porosity
+            np.random.normal(0, 0.2, num_samples)  # Random variation
+        )
+        df['abrasion_index'] = np.clip(df['abrasion_index'], 4, 7)
+        
+        # Save to CSV
+        output_path = os.path.join(self.config.mineral_processing_dir, 'pelletization_data.csv')
+        df.to_csv(output_path, index=False)
+        logger.info(f"Pelletization data saved to {output_path}")
+        
+        return df
+    
+    def generate_dewatering_data(self, num_samples=168, start_date='2024-01-01'):
+        """Generate synthetic data for dewatering operations"""
+        logger.info(f"Generating {num_samples} samples of dewatering data...")
+        
+        # Create timestamp series (hourly)
+        start = pd.to_datetime(start_date)
+        timestamps = [start + timedelta(hours=i) for i in range(num_samples)]
+        
+        # Define normal operating ranges for parameters
+        param_ranges = {
+            'slurry_feed_rate': (400, 600),      # m³/hr
+            'slurry_solids_pct': (25, 35),       # %
+            'flocculant_dosage': (15, 25),       # g/ton
+            'thickener_underflow_pct': (50, 60), # %
+            'filter_cycle_time': (8, 12),        # minutes
+            'filter_pressure': (6, 10),          # bar
+            'filter_cake_thickness': (25, 35),   # mm
+            'blow_time': (0.5, 1.5),             # minutes
+        }
+        
+        # Initialize dataframe
+        df = pd.DataFrame({'timestamp': timestamps})
+        
+        # Generate base signals with realistic patterns
+        for param, (min_val, max_val) in param_ranges.items():
+            # Base value in the middle of the range
+            base = (min_val + max_val) / 2
+            # Range amplitude
+            amplitude = (max_val - min_val) / 2 * 0.8
+            
+            # Generate base signal
+            signal = np.zeros(num_samples)
+            
+            # Add daily variation
+            daily = amplitude * 0.2 * np.sin(2 * np.pi * np.arange(num_samples) / 24)
+            signal
