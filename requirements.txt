@@ -10,7 +10,7 @@ click==8.0.3
 # Database
 SQLAlchemy==1.4.44        
 
-numpy==1.21.6             
+numpy==1.23.5
 pandas==1.4.4             
 scikit-learn==1.0.2      
 scipy==1.7.3             
