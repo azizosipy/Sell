@@ -190,17 +190,16 @@
                     body: JSON.stringify(formData)
                 });
 
-                if (!response.ok) {
-                    throw new Error('Login failed');
-                }
-
                 const data = await response.json();
-                if (data.success) {
+                
+                if (response.ok && data.success) {
                     window.location.href = '/';
+                } else {
+                    throw new Error(data.message || 'Login failed');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Login failed. Please check your credentials and try again.');
+                alert(error.message || 'Login failed. Please check your credentials and try again.');
             }
         });
     </script>

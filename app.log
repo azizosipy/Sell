@@ -4444,3 +4444,193 @@ Feature Importance:
 2025-04-09 11:06:34,967 - INFO - 127.0.0.1 - - [09/Apr/2025 11:06:34] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
 2025-04-09 11:06:36,395 - INFO - 127.0.0.1 - - [09/Apr/2025 11:06:36] "GET / HTTP/1.1" 200 -
 2025-04-09 11:06:36,422 - INFO - 127.0.0.1 - - [09/Apr/2025 11:06:36] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:31:48,020 - INFO - Database tables created successfully
+2025-04-15 17:31:48,022 - INFO - Loading data and initializing models...
+2025-04-15 17:31:48,022 - INFO - Loading data files...
+2025-04-15 17:31:48,095 - INFO - Sinter data shape: (100, 14)
+2025-04-15 17:31:48,096 - INFO - Sinter data columns: ['sample_id', 'basicity', 'sio2_content', 'al2o3_content', 'mgo_content', 'bed_height', 'ignition_temperature', 'burn_through_temperature', 'coke_rate', 'moisture_content', 'return_fines_ratio', 'tumbler_index', 'reducibility_index', 'productivity']
+2025-04-15 17:31:48,125 - INFO - Sinter data summary:
+         basicity  sio2_content  al2o3_content  ...  tumbler_index  reducibility_index  productivity
+count  100.000000    100.000000     100.000000  ...     100.000000          100.000000    100.000000
+mean     1.902000      5.156700       1.861300  ...      74.990000           68.085000      1.372100
+std      0.041341      0.109941       0.051122  ...       0.718374            0.715962      0.017309
+min      1.830000      4.950000       1.780000  ...      73.800000           66.900000      1.340000
+25%      1.870000      5.057500       1.810000  ...      74.400000           67.500000      1.360000
+50%      1.900000      5.170000       1.870000  ...      74.800000           67.900000      1.370000
+75%      1.940000      5.240000       1.900000  ...      75.700000           68.800000      1.390000
+max      1.970000      5.350000       1.950000  ...      76.100000           69.200000      1.400000
+
+[8 rows x 13 columns]
+2025-04-15 17:31:48,126 - INFO - Creating models...
+2025-04-15 17:31:48,129 - INFO - Training Blast Furnace Model...
+2025-04-15 17:31:48,242 - INFO - Blast Furnace Model Performance - Train R²: 0.9899, Test R²: 0.9862
+2025-04-15 17:31:48,242 - INFO - 
+Initializing Sinter Plant Model...
+2025-04-15 17:31:48,242 - INFO - 
+Sinter Plant Data Characteristics:
+2025-04-15 17:31:48,243 - INFO - Number of samples: 100
+2025-04-15 17:31:48,243 - INFO - Number of features: 12
+2025-04-15 17:31:48,243 - INFO - Features used: ['basicity', 'bed_height', 'coke_rate', 'return_fines_ratio', 'sio2_content', 'al2o3_content', 'mgo_content', 'ignition_temperature', 'burn_through_temperature', 'moisture_content', 'tumbler_index', 'reducibility_index']
+2025-04-15 17:31:48,243 - INFO - 
+Validating feature ranges based on domain knowledge...
+2025-04-15 17:31:48,245 - INFO - Samples within optimal basicity range: 53/100
+2025-04-15 17:31:48,245 - INFO - Samples within optimal bed height range: 100/100
+2025-04-15 17:31:48,245 - INFO - Samples within optimal coke rate range: 100/100
+2025-04-15 17:31:48,245 - INFO - Samples within optimal return fines range: 100/100
+2025-04-15 17:31:48,248 - INFO - 
+Using Leave-One-Out Cross-Validation due to small dataset size
+2025-04-15 17:31:48,249 - INFO - 
+Cross-validation Results:
+2025-04-15 17:31:48,356 - INFO - 
+RIDGE:
+2025-04-15 17:31:48,357 - INFO - LOOCV R²: 0.9720
+2025-04-15 17:31:48,357 - INFO - LOOCV RMSE: 0.0029
+2025-04-15 17:31:48,357 - INFO - LOOCV MAE: 0.0025
+2025-04-15 17:31:48,403 - INFO - 
+ELASTIC_NET:
+2025-04-15 17:31:48,404 - INFO - LOOCV R²: -0.0203
+2025-04-15 17:31:48,404 - INFO - LOOCV RMSE: 0.0174
+2025-04-15 17:31:48,404 - INFO - LOOCV MAE: 0.0149
+2025-04-15 17:31:48,406 - INFO - 
+Final Model Performance:
+2025-04-15 17:31:48,406 - INFO - R² Score: 0.9781
+2025-04-15 17:31:48,406 - INFO - RMSE: 0.0025
+2025-04-15 17:31:48,407 - INFO - MAE: 0.0022
+2025-04-15 17:31:48,407 - INFO - 
+Feature Importance:
+2025-04-15 17:31:48,407 - INFO - ignition_temperature: 0.0116
+2025-04-15 17:31:48,407 - INFO - basicity: 0.0083
+2025-04-15 17:31:48,407 - INFO - coke_rate: 0.0071
+2025-04-15 17:31:48,407 - INFO - bed_height: 0.0066
+2025-04-15 17:31:48,408 - INFO - reducibility_index: 0.0065
+2025-04-15 17:31:48,408 - INFO - sio2_content: 0.0061
+2025-04-15 17:31:48,408 - INFO - moisture_content: 0.0052
+2025-04-15 17:31:48,408 - INFO - burn_through_temperature: 0.0047
+2025-04-15 17:31:48,408 - INFO - tumbler_index: 0.0025
+2025-04-15 17:31:48,408 - INFO - al2o3_content: 0.0023
+2025-04-15 17:31:48,408 - INFO - mgo_content: 0.0013
+2025-04-15 17:31:48,408 - INFO - return_fines_ratio: 0.0001
+2025-04-15 17:31:48,408 - INFO - Models initialized successfully
+2025-04-15 17:31:48,441 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-04-15 17:31:48,441 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-15 17:31:58,610 - INFO - 127.0.0.1 - - [15/Apr/2025 17:31:58] "[32mGET / HTTP/1.1[0m" 302 -
+2025-04-15 17:31:58,621 - INFO - 127.0.0.1 - - [15/Apr/2025 17:31:58] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:31:58,800 - INFO - 127.0.0.1 - - [15/Apr/2025 17:31:58] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:31:59,006 - INFO - 127.0.0.1 - - [15/Apr/2025 17:31:59] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-15 17:32:00,803 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:00] "GET /register HTTP/1.1" 200 -
+2025-04-15 17:32:06,495 - INFO - Successfully registered new user: annabiaziz4@gmail.com
+2025-04-15 17:32:06,495 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:06] "POST /register HTTP/1.1" 200 -
+2025-04-15 17:32:08,208 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:08] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:32:08,239 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:08] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:10,851 - INFO - User logged in successfully: annabiaziz4@gmail.com
+2025-04-15 17:32:10,853 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:10] "POST /login HTTP/1.1" 200 -
+2025-04-15 17:32:10,879 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:10] "GET / HTTP/1.1" 200 -
+2025-04-15 17:32:10,909 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:10] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:12,894 - INFO - User logged out: 1
+2025-04-15 17:32:12,895 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:12] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-04-15 17:32:12,901 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:12] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:32:12,933 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:12] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:14,550 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:14] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:32:14,574 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:14] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:16,908 - INFO - User logged in successfully: annabiaziz4@gmail.com
+2025-04-15 17:32:16,909 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:16] "POST /login HTTP/1.1" 200 -
+2025-04-15 17:32:16,926 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:16] "GET / HTTP/1.1" 200 -
+2025-04-15 17:32:16,958 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:16] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:18,674 - INFO - User logged out: 1
+2025-04-15 17:32:18,675 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:18] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-04-15 17:32:18,681 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:18] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:32:18,711 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:18] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:27,154 - INFO - Database tables created successfully
+2025-04-15 17:32:27,155 - INFO - Loading data and initializing models...
+2025-04-15 17:32:27,156 - INFO - Loading data files...
+2025-04-15 17:32:27,164 - INFO - Sinter data shape: (100, 14)
+2025-04-15 17:32:27,164 - INFO - Sinter data columns: ['sample_id', 'basicity', 'sio2_content', 'al2o3_content', 'mgo_content', 'bed_height', 'ignition_temperature', 'burn_through_temperature', 'coke_rate', 'moisture_content', 'return_fines_ratio', 'tumbler_index', 'reducibility_index', 'productivity']
+2025-04-15 17:32:27,187 - INFO - Sinter data summary:
+         basicity  sio2_content  al2o3_content  ...  tumbler_index  reducibility_index  productivity
+count  100.000000    100.000000     100.000000  ...     100.000000          100.000000    100.000000
+mean     1.902000      5.156700       1.861300  ...      74.990000           68.085000      1.372100
+std      0.041341      0.109941       0.051122  ...       0.718374            0.715962      0.017309
+min      1.830000      4.950000       1.780000  ...      73.800000           66.900000      1.340000
+25%      1.870000      5.057500       1.810000  ...      74.400000           67.500000      1.360000
+50%      1.900000      5.170000       1.870000  ...      74.800000           67.900000      1.370000
+75%      1.940000      5.240000       1.900000  ...      75.700000           68.800000      1.390000
+max      1.970000      5.350000       1.950000  ...      76.100000           69.200000      1.400000
+
+[8 rows x 13 columns]
+2025-04-15 17:32:27,187 - INFO - Creating models...
+2025-04-15 17:32:27,188 - INFO - Training Blast Furnace Model...
+2025-04-15 17:32:27,295 - INFO - Blast Furnace Model Performance - Train R²: 0.9899, Test R²: 0.9862
+2025-04-15 17:32:27,295 - INFO - 
+Initializing Sinter Plant Model...
+2025-04-15 17:32:27,296 - INFO - 
+Sinter Plant Data Characteristics:
+2025-04-15 17:32:27,296 - INFO - Number of samples: 100
+2025-04-15 17:32:27,296 - INFO - Number of features: 12
+2025-04-15 17:32:27,296 - INFO - Features used: ['basicity', 'bed_height', 'coke_rate', 'return_fines_ratio', 'sio2_content', 'al2o3_content', 'mgo_content', 'ignition_temperature', 'burn_through_temperature', 'moisture_content', 'tumbler_index', 'reducibility_index']
+2025-04-15 17:32:27,297 - INFO - 
+Validating feature ranges based on domain knowledge...
+2025-04-15 17:32:27,297 - INFO - Samples within optimal basicity range: 53/100
+2025-04-15 17:32:27,298 - INFO - Samples within optimal bed height range: 100/100
+2025-04-15 17:32:27,298 - INFO - Samples within optimal coke rate range: 100/100
+2025-04-15 17:32:27,299 - INFO - Samples within optimal return fines range: 100/100
+2025-04-15 17:32:27,302 - INFO - 
+Using Leave-One-Out Cross-Validation due to small dataset size
+2025-04-15 17:32:27,302 - INFO - 
+Cross-validation Results:
+2025-04-15 17:32:27,402 - INFO - 
+RIDGE:
+2025-04-15 17:32:27,403 - INFO - LOOCV R²: 0.9720
+2025-04-15 17:32:27,403 - INFO - LOOCV RMSE: 0.0029
+2025-04-15 17:32:27,403 - INFO - LOOCV MAE: 0.0025
+2025-04-15 17:32:27,449 - INFO - 
+ELASTIC_NET:
+2025-04-15 17:32:27,450 - INFO - LOOCV R²: -0.0203
+2025-04-15 17:32:27,450 - INFO - LOOCV RMSE: 0.0174
+2025-04-15 17:32:27,450 - INFO - LOOCV MAE: 0.0149
+2025-04-15 17:32:27,451 - INFO - 
+Final Model Performance:
+2025-04-15 17:32:27,451 - INFO - R² Score: 0.9781
+2025-04-15 17:32:27,451 - INFO - RMSE: 0.0025
+2025-04-15 17:32:27,451 - INFO - MAE: 0.0022
+2025-04-15 17:32:27,452 - INFO - 
+Feature Importance:
+2025-04-15 17:32:27,452 - INFO - ignition_temperature: 0.0116
+2025-04-15 17:32:27,452 - INFO - basicity: 0.0083
+2025-04-15 17:32:27,452 - INFO - coke_rate: 0.0071
+2025-04-15 17:32:27,452 - INFO - bed_height: 0.0066
+2025-04-15 17:32:27,452 - INFO - reducibility_index: 0.0065
+2025-04-15 17:32:27,452 - INFO - sio2_content: 0.0061
+2025-04-15 17:32:27,452 - INFO - moisture_content: 0.0052
+2025-04-15 17:32:27,453 - INFO - burn_through_temperature: 0.0047
+2025-04-15 17:32:27,453 - INFO - tumbler_index: 0.0025
+2025-04-15 17:32:27,453 - INFO - al2o3_content: 0.0023
+2025-04-15 17:32:27,453 - INFO - mgo_content: 0.0013
+2025-04-15 17:32:27,453 - INFO - return_fines_ratio: 0.0001
+2025-04-15 17:32:27,453 - INFO - Models initialized successfully
+2025-04-15 17:32:27,472 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-04-15 17:32:27,472 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-15 17:32:29,930 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:29] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:32:30,074 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:30] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:32,922 - INFO - User logged in successfully: annabiaziz4@gmail.com
+2025-04-15 17:32:32,923 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:32] "POST /login HTTP/1.1" 200 -
+2025-04-15 17:32:32,948 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:32] "GET / HTTP/1.1" 200 -
+2025-04-15 17:32:32,980 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:32] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:34,707 - INFO - User logged out: 1
+2025-04-15 17:32:34,708 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:34] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-04-15 17:32:34,713 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:34] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:32:34,745 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:34] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:32:38,939 - INFO - 127.0.0.1 - - [15/Apr/2025 17:32:38] "GET /register HTTP/1.1" 200 -
+2025-04-15 17:33:00,517 - INFO - Successfully registered new user: cm@neuronsai.tech
+2025-04-15 17:33:00,517 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:00] "POST /register HTTP/1.1" 200 -
+2025-04-15 17:33:01,799 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:01] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:33:01,832 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:01] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:33:06,526 - INFO - User logged in successfully: cm@neuronsai.tech
+2025-04-15 17:33:06,526 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:06] "POST /login HTTP/1.1" 200 -
+2025-04-15 17:33:06,544 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:06] "GET / HTTP/1.1" 200 -
+2025-04-15 17:33:06,577 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:06] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -
+2025-04-15 17:33:08,089 - INFO - User logged out: 2
+2025-04-15 17:33:08,090 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:08] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-04-15 17:33:08,095 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:08] "GET /login HTTP/1.1" 200 -
+2025-04-15 17:33:08,128 - INFO - 127.0.0.1 - - [15/Apr/2025 17:33:08] "[36mGET /static/images/logo.png HTTP/1.1[0m" 304 -

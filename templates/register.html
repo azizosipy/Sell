@@ -175,42 +175,12 @@
 
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
 
-            // Clear any previous error messages
-            const existingError = document.querySelector('.error-message');
-            if (existingError) {
-                existingError.remove();
-            }
-
-            // Validate required fields
-            if (!fullName || !email || !password || !confirmPassword) {
-                showError('All fields are required');
-                return;
-            }
-
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
-            
-            // Validate password match
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-
-            // Validate password strength
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters long');
-                return;
-            }
+            const formData = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                fullName: document.getElementById('fullName').value
+            };
 
             try {
                 const response = await fetch('/register', {
@@ -218,41 +188,22 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        fullName: fullName,
-                        email: email,
-                        password: password
-                    })
+                    body: JSON.stringify(formData)
                 });
 
                 const data = await response.json();
                 
-                if (response.ok) {
-                    // Show success message
-                    const successMessage = document.createElement('div');
-                    successMessage.className = 'p-4 mb-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-600 dark:text-green-400';
-                    successMessage.textContent = 'Registration successful! Redirecting to login...';
-                    document.querySelector('form').insertBefore(successMessage, document.querySelector('button'));
-                    
-                    // Redirect to login page after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 2000);
+                if (response.ok && data.success) {
+                    alert('Registration successful! Please login with your credentials.');
+                    window.location.href = '/login';
                 } else {
-                    showError(data.message || 'Registration failed');
+                    throw new Error(data.message || 'Registration failed');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showError('Registration failed. Please try again.');
+                alert(error.message || 'Registration failed. Please try again.');
             }
         });
-
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message p-4 mb-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-600 dark:text-red-400';
-            errorDiv.textContent = message;
-            document.querySelector('form').insertBefore(errorDiv, document.querySelector('button'));
-        }
     </script>
 </body>
 </html> 
