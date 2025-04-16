@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key in production
-app.permanent_session_lifetime = timedelta(days=7)  # Set session lifetime to 7 days
+app.permanent_session_lifetime = timedelta(days=365*100)  # Set session lifetime to 100 years (effectively permanent)
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///steel_plant.db'
@@ -158,7 +158,6 @@ def login():
 
         email = data.get('email')
         password = data.get('password')
-        remember = data.get('remember', False)
 
         # Validate required fields
         if not all([email, password]):
@@ -169,8 +168,7 @@ def login():
         
         if user and user.check_password(password):
             session['user_id'] = user.id
-            if remember:
-                session.permanent = True
+            session.permanent = True  # Always set session as permanent
             
             # Update last login timestamp
             user.last_login = func.now()
