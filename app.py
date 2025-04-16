@@ -201,6 +201,16 @@ def home():
 def models():
     return render_template('models.html')
 
+@app.route('/users')
+@login_required
+def users():
+    try:
+        users = User.query.all()
+        return render_template('users.html', users=users)
+    except Exception as e:
+        logger.error(f"Error accessing users page: {str(e)}")
+        return jsonify({'success': False, 'message': 'Error accessing users page'}), 500
+
 # Load and preprocess data
 def load_data():
     logger.info("Loading data files...")
